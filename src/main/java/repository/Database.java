@@ -1,0 +1,95 @@
+package repository;
+
+import java.io.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Properties;
+
+public class Database {
+    private static String DRIVER;
+    private static String URL;
+    private static String USERNAME;
+    private static String PASSWORD;
+    private static boolean ready;
+
+    public static boolean init(){
+        load();
+        ready = checkDriver() && checkDB();
+        return ready;
+    }
+
+    public static void load(){
+        boolean loaded = false;
+        Properties properties = new Properties();
+
+        try (InputStream input = Database.class.getClassLoader().getResourceAsStream("database.properties")) {
+            properties.load(input);
+            DRIVER = (String) properties.getOrDefault("driver", null);
+            URL = (String) properties.getOrDefault("url", null);
+            USERNAME = (String) properties.getOrDefault("username", null);
+            PASSWORD = (String) properties.getOrDefault("password", null);
+            loaded = DRIVER != null && URL != null && USERNAME != null && PASSWORD != null;
+        } catch (FileNotFoundException e) {
+            System.out.printf("Файл database.properties не найден: %s\n", e.getMessage());
+        } catch (Exception e) {
+            System.out.printf("Ошибка чтения файла database.properties: %s\n", e.getMessage());
+        }
+
+        if (!loaded) {
+            System.out.println("В файле database.properties не найдены необходимые поля");
+            System.out.println("Значения driver, url, username, password файла database.properties используются по умолчанию");
+            DRIVER = "org.postgresql.Driver";
+            URL = "jdbc:postgresql://localhost/hublogers";
+            USERNAME = "postgres";
+            PASSWORD = "postgres";
+        }
+
+    }
+
+    public static boolean checkDriver() {
+        try {
+            Class.forName(DRIVER);
+            return true;
+        } catch (ClassNotFoundException e) {
+            System.out.println("Нет JDBC-драйвера! Подключите JDBC-драйвер к проекту согласно инструкции.");
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean checkDB() {
+        Connection connection = null;
+        try {
+            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Нет подключения к базе данных! Проверьте имя базы, путь к базе или разверните локально резервную копию согласно инструкции");
+            throw new RuntimeException(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    if (!connection.isClosed()) {
+                        connection.close();
+                    }
+                } catch (SQLException e) {
+                    System.err.printf("Ошибка закрытия соединения с базой данных: %s\n", e.getMessage());
+                }
+            }
+        }
+    }
+
+    public static Connection getConnection() throws SQLException {
+        if (ready) {
+            Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            if (connection == null) {
+                throw new SQLException("connection is null");
+            }
+            if (connection.isClosed()) {
+                throw new SQLException("connection closed");
+            }
+            return connection;
+        } else {
+            throw new SQLException("Подключение к базе данных не конфигурировано");
+        }
+    }
+}
