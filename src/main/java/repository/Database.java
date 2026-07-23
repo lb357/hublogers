@@ -13,6 +13,15 @@ public class Database {
     private static String PASSWORD;
     private static boolean ready;
 
+    public static void start() {
+        System.out.println("Конфигурация базы данных...");
+        if (init()) {
+            System.out.println("База данных подключена!");
+        } else {
+            System.out.println("База данных НЕ ПОДКЛЮЧЕНА!");
+        }
+    }
+
     public static boolean init(){
         load();
         ready = checkDriver() && checkDB();

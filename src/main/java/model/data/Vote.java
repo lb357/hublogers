@@ -1,10 +1,11 @@
-package model;
+package model.data;
 
-public class Vote implements DataModel {
+import model.common.DataModel;
+
+public class Vote extends DataModel {
     private final int postId;
     private final int voterId;
     private final boolean vote;
-    private static final Fields fields = new Fields("post_id", "voter_id", "vote");
 
 
     public Vote(Integer postId, Integer voterId, Boolean vote) {
@@ -28,7 +29,4 @@ public class Vote implements DataModel {
             return -1;
         }
     }
-
-    @Override
-    public Fields getFields() { return fields; }
 }

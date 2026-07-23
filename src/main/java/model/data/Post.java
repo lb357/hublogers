@@ -1,16 +1,16 @@
-package model;
+package model.data;
+
+import model.common.DataModel;
 
 import java.sql.Timestamp;
 
-public class Post implements DataModel {
+public class Post extends DataModel {
     private final int id;
     private final int authorId;
     private final Integer hubId;
     private final String label;
     private final String content;
     private final Timestamp creationTime;
-    private static final Fields fields = new Fields("id", "author_id", "hub_id", "label", "content", "creation_time");
-
 
     public Post(Integer id, Integer authorId, Integer hubId, String label, String content, Timestamp creationTime) {
         this.id = id;
@@ -44,7 +44,4 @@ public class Post implements DataModel {
     public Timestamp getCreationTime() {
         return creationTime;
     }
-
-    @Override
-    public Fields getFields() { return fields; }
 }

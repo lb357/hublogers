@@ -1,26 +1,14 @@
-package model;
+package model.data;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
+import model.common.DataModel;
+import util.SecureStringGenerator;
 
-public class User implements DataModel {
+public class User extends DataModel {
     private final Integer id;
     private final String username;
     private final String email;
     private final String passwordHash;
     private final String status;
-    private static final Fields fields = new Fields("id", "username", "email", "password_hash", "status");
-    private static final MessageDigest digest;
-
-    static {
-        try {
-            digest = MessageDigest.getInstance("SHA-256");
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public User(Integer id, String username, String email, String passwordHash, String status) {
         this.id = id;
@@ -36,11 +24,6 @@ public class User implements DataModel {
         this.email = null;
         this.passwordHash = null;
         this.status = status;
-    }
-
-    private static String getHashString(String value) {
-        byte[] hash = digest.digest(value.getBytes(StandardCharsets.UTF_8));
-        return Base64.getEncoder().encodeToString(hash);
     }
 
     public Integer getId() {
@@ -64,9 +47,6 @@ public class User implements DataModel {
     }
 
     public boolean checkPassword(String password) {
-        return this.passwordHash.equals(getHashString(password));
+        return this.passwordHash.equals(SecureStringGenerator.getSHA256String(password));
     }
-
-    @Override
-    public Fields getFields() { return fields; }
 }

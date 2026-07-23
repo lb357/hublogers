@@ -1,13 +1,12 @@
-package model;
+package model.data;
 
-public class Hub implements DataModel {
+import model.common.DataModel;
+
+public class Hub extends DataModel {
     private final int id;
     private final int creatorId;
     private final String hubname;
     private final String description;
-
-    private static final Fields fields = new Fields("id", "creator_id", "hubname", "description");
-
 
     public Hub(Integer id, Integer creatorId, String hubname, String description) {
         this.id = id;
@@ -31,7 +30,4 @@ public class Hub implements DataModel {
     public String getDescription() {
         return description;
     }
-
-    @Override
-    public Fields getFields() { return fields; }
 }

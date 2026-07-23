@@ -1,14 +1,16 @@
-package repository;
+package repository.data;
 
-import model.TransactionResult;
-import model.User;
+import model.common.TransactionResult;
+import model.data.User;
+import repository.Database;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class UserRepository {
     public static TransactionResult<User> createUser(String username, String email, String passwordHash) {
         if (username==null||username.isBlank()||email==null||email.isBlank()||passwordHash==null||passwordHash.isBlank()) {
-            throw new IllegalArgumentException("Некорректные аргументы");
+            throw new IllegalArgumentException("Пустые аргументы");
         }
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
@@ -39,10 +41,11 @@ public class UserRepository {
 
     public static TransactionResult<User> readUser(String email, String password) {
         if (email==null||email.isBlank()||password==null||password.isBlank()) {
-            throw new IllegalArgumentException("Некорректные аргументы");
+            throw new IllegalArgumentException("Пустые аргументы");
         }
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE email=?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE email=?;",
+                    Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, email);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -69,7 +72,8 @@ public class UserRepository {
 
     public static TransactionResult<User> readUser(int id) {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT id, username, status FROM users WHERE id=?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT id, username, status FROM users WHERE id=?;",
+                    Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -89,14 +93,20 @@ public class UserRepository {
     }
 
 
-    public static TransactionResult<Integer> updateUser(int id, String status) {
+    public static TransactionResult<User> updateUser(int id, String status) {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET status=? WHERE id=?;");
+            PreparedStatement statement = connection.prepareStatement("UPDATE users SET status=? WHERE id=? RETURNING *;",
+                    Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, status);
             statement.setInt(2, id);
-            int count = statement.executeUpdate();
-            if (count > 0) {
-                return new TransactionResult<>(id);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                User user = new User(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3)
+                );
+                return new TransactionResult<>(user);
             } else {
                 return new TransactionResult<>("Обновление не выполнено", 0);
             }
@@ -123,4 +133,25 @@ public class UserRepository {
     }
 
 
+    public static TransactionResult<ArrayList<User>> getUsers() {
+        try (Connection connection = Database.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users;",
+                    Statement.RETURN_GENERATED_KEYS);
+            ResultSet resultSet = statement.executeQuery();
+            ArrayList<User> data = new ArrayList<>();
+            while (resultSet.next()) {
+                data.add(new User(
+                        resultSet.getInt(1),
+                        resultSet.getString(2),
+                        resultSet.getString(3),
+                        resultSet.getString(4),
+                        resultSet.getString(5)
+                ));
+            }
+            return new TransactionResult<>(data);
+        } catch (SQLException e) {
+            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
+            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
+        }
+    }
 }

@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS users, posts, hubs, votes, auth_tokens;
+DROP TABLE IF EXISTS users, posts, hubs, votes, sessions;
 
 CREATE TABLE users (
     id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
@@ -52,17 +52,17 @@ CREATE TABLE votes (
 );
 
 
-CREATE TABLE auth_tokens (
-    token varchar PRIMARY KEY UNIQUE NOT NULL,
+CREATE TABLE sessions (
+    auth_token varchar PRIMARY KEY UNIQUE NOT NULL,
     user_id int NOT NULL,
     auth_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-    CONSTRAINT fk_auth_tokens_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_sessions_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_users_email ON users(email);
 CREATE INDEX idx_posts_hub_id ON posts(hub_id);
 CREATE INDEX idx_posts_author_id ON posts(author_id);
 CREATE INDEX idx_votes_post_id ON votes(post_id);
-CREATE INDEX idx_auth_tokens_auth_time ON auth_tokens(auth_time);
+CREATE INDEX idx_sessions_auth_time ON sessions(auth_time);
 
