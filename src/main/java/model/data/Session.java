@@ -1,15 +1,14 @@
 package model.data;
 
 import model.common.DataModel;
-
-import java.sql.Timestamp;
+import model.common.DateTime;
 
 public class Session extends DataModel {
     private final String authToken;
     private final int userId;
-    private final Timestamp authTime;
+    private final DateTime authTime;
 
-    public Session(String token, int user_id, Timestamp auth_time) {
+    public Session(String token, int user_id, DateTime auth_time) {
         this.authToken = token;
         this.userId = user_id;
         this.authTime = auth_time;
@@ -23,7 +22,17 @@ public class Session extends DataModel {
         return userId;
     }
 
-    public Timestamp getAuthTime() {
+    public DateTime getAuthTime() {
         return authTime;
+    }
+
+    @Override
+    public String toString() {
+        return "%s <-> %d (%s)".formatted(authTime, userId, authTime.toString());
+    }
+
+
+    public static String getFieldsDescription() {
+        return "Токен <-> id Пользователя (Время создания)";
     }
 }

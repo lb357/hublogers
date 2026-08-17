@@ -5,7 +5,7 @@ import model.common.DataModel;
 public class Vote extends DataModel {
     private final int postId;
     private final int voterId;
-    private final boolean vote;
+    private final Boolean vote;
 
 
     public Vote(Integer postId, Integer voterId, Boolean vote) {
@@ -23,10 +23,30 @@ public class Vote extends DataModel {
     }
 
     public int getVoteDelta() {
+        if (vote == null) {
+            return 0;
+        }
+
         if (vote) {
             return 1;
         } else {
             return -1;
         }
+    }
+
+    public Boolean get() {return vote;}
+
+    @Override
+    public String toString() {
+        if (vote) {
+            return "(%d <- %d) +".formatted(postId, voterId);
+        } else {
+            return "(%d <- %d) -".formatted(postId, voterId);
+        }
+    }
+
+
+    public static String getFieldsDescription() {
+        return "(id Поста <- id Пользователя) Голос";
     }
 }

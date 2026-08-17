@@ -1,43 +1,48 @@
 package model.common;
 
+import java.sql.SQLException;
+
 public class TransactionResult<T> {
     private final T data;
     private final boolean success;
+    private final String message;
 
-    private final String state;
-    private final Integer code;
-
-    public TransactionResult(String state, Integer code) {
-        this.data = null;
-        this.success = false;
-        this.state = state;
-        this.code = code;
-    }
-
-    public TransactionResult(T data) {
+    private TransactionResult(T data, boolean success, String message) {
         this.data = data;
-        this.success = true;
-        this.state = null;
-        this.code = null;
+        this.success = success;
+        this.message = message;
     }
 
-    public T getData() {
-        return data;
-    }
-
-    public String getMessage() {
-        if (state == null && code == null) {
-            return "OK";
-        } else {
-            return "%s (%d)".formatted(state, code);
+    public static <T> TransactionResult<T> successResponse(T data) throws SQLException {
+        if (data == null) {
+            throw new SQLException("В успешном (не Void) результате data == null");
         }
+        return new TransactionResult<>(data, true, "OK");
     }
 
-    public boolean isSuccess() {
-        return success;
+    public static TransactionResult<Void> successResponse() throws SQLException {
+        return new TransactionResult<>(null, true, "OK");
     }
 
-    public <K> TransactionResult<K> transferFail(){
-        return new TransactionResult<>(state, code);
+    public static <T> TransactionResult<T> failResponse(String message){
+        return new TransactionResult<>(null, false, message);
+    }
+
+    public static <T> TransactionResult<T> errorResponse(){
+        return new TransactionResult<>(null, false, "Внутренняя ошибка");
+    }
+
+    public T getData() { return data; }
+
+    public String getMessage() { return message; }
+
+    public boolean isSuccess() { return success; }
+
+    public <K> TransactionResult<K> transferFailure() throws SQLException {
+        if (data == null) {
+            return new TransactionResult<>(null, false, message);
+        } else {
+            throw new SQLException("data != null");
+        }
     }
 }

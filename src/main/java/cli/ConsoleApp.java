@@ -1,41 +1,24 @@
 package cli;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.function.Consumer;
+import cli.menu.Menu;
+import cli.menu.MenuLogic;
 
 public class ConsoleApp {
-    private static Scanner scanner = new Scanner(System.in);
+    private static boolean working = true;
+    private static Menu currentMenu = Menu.HOME;
 
     public static void menu() {
-        String cmd = "";
-        while (!cmd.equals("exit")) {
-            renderMenu(new HashMap<>(){{
-                put("Лента постов", ConsoleApp::feed);
-            }});
-            cmd = scanner.nextLine();
-        }
-        scanner.close();
-    }
-
-    public static void renderMenu(HashMap<String, Runnable> data){
-        renderSeparator();
-        HashMap<Integer, String> chooseMap = new HashMap<Integer, String>();
-        int i = 0;
-        for (String key: data.keySet()) {
-            i++;
-            System.out.printf("%d) %s\n", i, key);
-            chooseMap.put(i, key);
+        while (working) {
+            MenuLogic.renderSeparator(currentMenu.getMenuName());
+            Runnable renderer = currentMenu.getRenderer();
+            renderer.run();
+            if (currentMenu == null) {
+                working = false;
+            }
         }
     }
 
-    public static void renderSeparator() {
-        System.out.println("==================================================");
-    }
-
-
-    public static void feed() {
-        renderSeparator();
+    public static void setMenu(Menu currentMenu) {
+        ConsoleApp.currentMenu = currentMenu;
     }
 }

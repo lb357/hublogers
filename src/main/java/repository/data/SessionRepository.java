@@ -1,17 +1,17 @@
 package repository.data;
 
+import model.common.DateTime;
 import model.data.Session;
-import model.common.TransactionResult;
 import repository.Database;
 
 import java.sql.*;
 import java.util.ArrayList;
 
 public class SessionRepository {
-    public static TransactionResult<Session> createSession(String authToken, int user_id) {
+    public static Session createSession(String authToken, int user_id) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO sessions (token, user_id) VALUES (?, ?) returning *; ",
+                    "INSERT INTO sessions (auth_token, user_id) VALUES (?, ?) returning *; ",
                     Statement.RETURN_GENERATED_KEYS
             );
             statement.setString(1, authToken);
@@ -19,75 +19,58 @@ public class SessionRepository {
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                return new TransactionResult<>(new Session(
+                return new Session(
                         resultSet.getString(1),
                         resultSet.getInt(2),
-                        resultSet.getTimestamp(3)
-                ));
+                        new DateTime(resultSet.getTimestamp(3))
+                );
             } else {
-                throw new SQLException("Из базы данных не получен ответ");
+                throw new SQLException("Ожидалось создание новой записи, однако запись не была создана");
             }
-        } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
         }
     }
 
-    public static TransactionResult<Integer> getUserIdByAuthToken(String authToken) {
-        if (authToken==null||authToken.isBlank()) {
-            throw new IllegalArgumentException("Пустые аргументы");
-        }
+    public static Integer getUserIdByAuthToken(String authToken) throws SQLException {
         try (Connection connection = Database.getConnection()) {
+            Statement deleteStatement = connection.createStatement();
+            deleteStatement.executeUpdate(
+                    "DELETE FROM sessions WHERE auth_time < NOW() - INTERVAL '30 DAY';"
+            );
+
             PreparedStatement statement = connection.prepareStatement(
-                    "DELETE FROM sessions WHERE auth_time < NOW() - INTERVAL '30 DAY'; SELECT * FROM sessions WHERE auth_token=?;",
-                    Statement.RETURN_GENERATED_KEYS
+                    "SELECT * FROM sessions WHERE auth_token=?;"
             );
             statement.setString(1, authToken);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new TransactionResult<>(resultSet.getInt(2));
+                return resultSet.getInt(2);
             } else {
-                return new TransactionResult<>("Токен не найден (возможно устарел)", 0);
+                return null;
             }
-        } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
         }
     }
 
-    public static TransactionResult<String> deleteSession(String authToken) {
+    public static int deleteSession(String authToken) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("DELETE from sessions WHERE auth_token=?;");
             statement.setString(1, authToken);
-            int count = statement.executeUpdate();
-            if (count > 0) {
-                return new TransactionResult<>(authToken);
-            } else {
-                return new TransactionResult<>("Удаление не выполнено", 0);
-            }
-        } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
+            return statement.executeUpdate();
         }
     }
 
-    public static TransactionResult<ArrayList<Session>> getSessions() {
+    public static ArrayList<Session> getSessions() throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM sessions;",
-                    Statement.RETURN_GENERATED_KEYS);
-            ResultSet resultSet = statement.executeQuery();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM sessions;");
             ArrayList<Session> data = new ArrayList<>();
             while (resultSet.next()) {
                 data.add(new Session(
                         resultSet.getString(1),
                         resultSet.getInt(2),
-                        resultSet.getTimestamp(3)
+                        new DateTime(resultSet.getTimestamp(3))
                 ));
             }
-            return new TransactionResult<>(data);
-        } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
+            return data;
         }
     }
 }

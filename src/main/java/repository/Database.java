@@ -15,29 +15,33 @@ public class Database {
 
     public static void start() {
         System.out.println("Конфигурация базы данных...");
-        if (init()) {
+        loadConfig();
+        ready = checkConnection();
+        if (ready) {
             System.out.println("База данных подключена!");
         } else {
             System.out.println("База данных НЕ ПОДКЛЮЧЕНА!");
         }
     }
 
-    public static boolean init(){
-        load();
-        ready = checkDriver() && checkDB();
+    public static boolean isReady() {
         return ready;
     }
 
-    public static void load(){
+    private static boolean checkConnection(){
+        return checkDriver() && checkDB();
+    }
+
+    private static void loadConfig(){
         boolean loaded = false;
         Properties properties = new Properties();
 
         try (InputStream input = Database.class.getClassLoader().getResourceAsStream("database.properties")) {
             properties.load(input);
-            DRIVER = (String) properties.getOrDefault("driver", null);
-            URL = (String) properties.getOrDefault("url", null);
-            USERNAME = (String) properties.getOrDefault("username", null);
-            PASSWORD = (String) properties.getOrDefault("password", null);
+            DRIVER = (String) properties.getOrDefault("database-driver", null);
+            URL = (String) properties.getOrDefault("database-url", null);
+            USERNAME = (String) properties.getOrDefault("database-username", null);
+            PASSWORD = (String) properties.getOrDefault("database-password", null);
             loaded = DRIVER != null && URL != null && USERNAME != null && PASSWORD != null;
         } catch (FileNotFoundException e) {
             System.out.printf("Файл database.properties не найден: %s\n", e.getMessage());
@@ -47,7 +51,7 @@ public class Database {
 
         if (!loaded) {
             System.out.println("В файле database.properties не найдены необходимые поля");
-            System.out.println("Значения driver, url, username, password файла database.properties используются по умолчанию");
+            System.out.println("Значения database-driver, database-url, database-username, database-password файла database.properties используются по умолчанию");
             DRIVER = "org.postgresql.Driver";
             URL = "jdbc:postgresql://localhost/hublogers";
             USERNAME = "postgres";
@@ -56,7 +60,7 @@ public class Database {
 
     }
 
-    public static boolean checkDriver() {
+    private static boolean checkDriver() {
         try {
             Class.forName(DRIVER);
             return true;
@@ -66,35 +70,23 @@ public class Database {
         }
     }
 
-    public static boolean checkDB() {
+    private static boolean checkDB() {
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            connection.close();
             return true;
         } catch (SQLException e) {
             System.out.println("Нет подключения к базе данных! Проверьте имя базы, путь к базе или разверните локально резервную копию согласно инструкции");
-            throw new RuntimeException(e);
-        } finally {
-            if (connection != null) {
-                try {
-                    if (!connection.isClosed()) {
-                        connection.close();
-                    }
-                } catch (SQLException e) {
-                    System.err.printf("Ошибка закрытия соединения с базой данных: %s\n", e.getMessage());
-                }
-            }
+            return false;
         }
     }
 
     public static Connection getConnection() throws SQLException {
         if (ready) {
             Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-            if (connection == null) {
-                throw new SQLException("connection is null");
-            }
-            if (connection.isClosed()) {
-                throw new SQLException("connection closed");
+            if (connection == null || connection.isClosed()) {
+                throw new SQLException("Подключение к базе данных не открылось");
             }
             return connection;
         } else {

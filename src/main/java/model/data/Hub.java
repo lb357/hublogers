@@ -4,7 +4,7 @@ import model.common.DataModel;
 
 public class Hub extends DataModel {
     private final int id;
-    private final int creatorId;
+    private final Integer creatorId;
     private final String hubname;
     private final String description;
 
@@ -29,5 +29,28 @@ public class Hub extends DataModel {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public String toString() {
+        if (creatorId != null) {
+            return "(%d <- %d) %s - %s".formatted(
+                    id,
+                    creatorId,
+                    hubname,
+                    description
+            );
+        } else {
+            return "(%d) %s - %s".formatted(
+                    id,
+                    hubname,
+                    description
+            );
+        }
+    }
+
+
+    public static String getFieldsDescription() {
+        return "(id Хаба <- id Пользователя) Название - Описание";
     }
 }

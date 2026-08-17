@@ -1,8 +1,7 @@
 package model.data;
 
 import model.common.DataModel;
-
-import java.sql.Timestamp;
+import model.common.DateTime;
 
 public class Post extends DataModel {
     private final int id;
@@ -10,9 +9,9 @@ public class Post extends DataModel {
     private final Integer hubId;
     private final String label;
     private final String content;
-    private final Timestamp creationTime;
+    private final DateTime creationTime;
 
-    public Post(Integer id, Integer authorId, Integer hubId, String label, String content, Timestamp creationTime) {
+    public Post(Integer id, Integer authorId, Integer hubId, String label, String content, DateTime creationTime) {
         this.id = id;
         this.authorId = authorId;
         this.hubId = hubId;
@@ -41,7 +40,21 @@ public class Post extends DataModel {
         return content;
     }
 
-    public Timestamp getCreationTime() {
+    public DateTime getCreationTime() {
         return creationTime;
+    }
+
+    @Override
+    public String toString() {
+        if (hubId == null) {
+            return "(%d <- %d) %s // %s // %s".formatted(id, authorId, creationTime.toString(), label, content);
+        } else {
+            return "(%d <- %d / %d) %s // %s // %s".formatted(id, authorId, hubId, creationTime.toString(), label, content);
+        }
+    }
+
+
+    public static String getFieldsDescription() {
+        return "(id Поста <- id Пользователя / id Хаба) Время создания // Заголовок // Контент";
     }
 }

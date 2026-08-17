@@ -26,6 +26,7 @@ public class User extends DataModel {
         this.status = status;
     }
 
+
     public Integer getId() {
         return id;
     }
@@ -47,6 +48,24 @@ public class User extends DataModel {
     }
 
     public boolean checkPassword(String password) {
-        return this.passwordHash.equals(SecureStringGenerator.getSHA256String(password));
+        if (this.passwordHash != null) {
+            return this.passwordHash.equals(SecureStringGenerator.getSHA256String(password));
+        } else {
+            return false;
+        }
+    }
+
+    @Override
+    public String toString() {
+        if (email == null || passwordHash == null) {
+            return "(%d) %s - %s".formatted(id, username, status);
+        } else {
+            return "(%d) %s - %s / %s - %s".formatted(id, username, status, email, passwordHash);
+        }
+    }
+
+
+    public static String getFieldsDescription() {
+        return "(id Пользователя) Имя - Статус / Адрес электронной почты - Хэш пароля";
     }
 }

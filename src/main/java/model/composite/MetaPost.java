@@ -1,30 +1,37 @@
 package model.composite;
 
 import model.common.DataModel;
-
-import java.sql.Timestamp;
+import model.data.Hub;
+import model.data.Post;
+import model.data.User;
 
 public class MetaPost extends DataModel {
-    private final int postId;
-    private final int authorId;
-    private final int hubId;
-    private final String label;
-    private final Timestamp creationTime;
+    private final Post post;
+    private final User author;
+    private final Hub hub;
+
     private final int likes;
     private final int dislikes;
-    private final String username;
-    private final String hubname;
 
-    public MetaPost(int postId, int authorId, int hubId, String label, Timestamp creationTime, int likes, int dislikes, String username, String hubname) {
-        this.postId = postId;
-        this.authorId = authorId;
-        this.hubId = hubId;
-        this.label = label;
-        this.creationTime = creationTime;
+
+    public MetaPost(Post post, User author, Hub hub, int likes, int dislikes) {
+        this.post = post;
+        this.author = author;
+        this.hub = hub;
         this.likes = likes;
         this.dislikes = dislikes;
-        this.username = username;
-        this.hubname = hubname;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public User getAuthor() {
+        return author;
+    }
+
+    public Hub getHub() {
+        return hub;
     }
 
     public int getLikes() {
@@ -35,32 +42,32 @@ public class MetaPost extends DataModel {
         return dislikes;
     }
 
-    public int getPostId() {
-        return postId;
+    @Override
+    public String toString() {
+        if (hub != null) {
+            return "(%d / %s / %d / %s) %s\n%s [+%d -%d]\n".formatted(
+                    post.getId(),
+                    author.getUsername(),
+                    hub.getId(),
+                    hub.getHubname(),
+                    post.getCreationTime(),
+                    post.getLabel(),
+                    likes,
+                    dislikes
+            );
+        } else {
+            return "(%d / %s) %s\n%s [+%d -%d]\n".formatted(
+                    post.getId(),
+                    author.getUsername(),
+                    post.getCreationTime(),
+                    post.getLabel(),
+                    likes,
+                    dislikes
+            );
+        }
     }
 
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public int getHubId() {
-        return hubId;
-    }
-
-    public String getHubname() {
-        return hubname;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-
-    public Timestamp getCreationTime() {
-        return creationTime;
+    public static String getFieldsDescription() {
+        return "(id Поста / Имя Пользователя / id Хаба / Название Хаба) Время создания\nЗаголовок [Рейтинг]\n";
     }
 }

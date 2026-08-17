@@ -1,6 +1,5 @@
 package repository.data;
 
-import model.common.TransactionResult;
 import model.data.User;
 import repository.Database;
 
@@ -8,10 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 
 public class UserRepository {
-    public static TransactionResult<User> createUser(String username, String email, String passwordHash) {
-        if (username==null||username.isBlank()||email==null||email.isBlank()||passwordHash==null||passwordHash.isBlank()) {
-            throw new IllegalArgumentException("Пустые аргументы");
-        }
+    public static User createUser(String username, String email, String passwordHash) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
                     "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?) returning *;",
@@ -23,29 +19,28 @@ public class UserRepository {
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
-                return new TransactionResult<>(new User(
+                return new User(
                         resultSet.getInt(1),
                         resultSet.getString(2),
                         resultSet.getString(3),
                         resultSet.getString(4),
                         resultSet.getString(5)
-                ));
+                );
             } else {
-                throw new SQLException("Из базы данных не получен ответ");
+                throw new SQLException("Ожидалось создание новой записи, однако запись не была создана");
             }
         } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
+            if (e.getErrorCode() == 23505) {
+                return null;
+            } else {
+                throw e;
+            }
         }
     }
 
-    public static TransactionResult<User> readUser(String email, String password) {
-        if (email==null||email.isBlank()||password==null||password.isBlank()) {
-            throw new IllegalArgumentException("Пустые аргументы");
-        }
+    public static User readUser(String email, String password) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE email=?;",
-                    Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE email=?;");
             statement.setString(1, email);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -57,87 +52,67 @@ public class UserRepository {
                         resultSet.getString(5)
                 );
                 if (user.checkPassword(password)) {
-                    return new TransactionResult<>(user);
+                    return user;
                 } else {
-                    return new TransactionResult<>("Неверный пароль", 0);
+                    return null;
                 }
             } else {
-                return new TransactionResult<>("Пользователь не найден", 0);
+                return null;
             }
-        } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
         }
     }
 
-    public static TransactionResult<User> readUser(int id) {
+    public static User readUser(int id) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT id, username, status FROM users WHERE id=?;",
-                    Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = connection.prepareStatement("SELECT id, username, status FROM users WHERE id=?;");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                User user = new User(
+                return new User(
                         resultSet.getInt(1),
                         resultSet.getString(2),
                         resultSet.getString(3)
                 );
-                return new TransactionResult<>(user);
             } else {
-                return new TransactionResult<>("Пользователь не найден", 0);
+                return null;
             }
-        } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
         }
     }
 
 
-    public static TransactionResult<User> updateUser(int id, String status) {
+    public static User updateUser(int id, String status) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET status=? WHERE id=? RETURNING *;",
-                    Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = connection.prepareStatement(
+                    "UPDATE users SET status=? WHERE id=? RETURNING *;"
+            );
             statement.setString(1, status);
             statement.setInt(2, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                User user = new User(
+                return new User(
                         resultSet.getInt(1),
                         resultSet.getString(2),
                         resultSet.getString(3)
                 );
-                return new TransactionResult<>(user);
             } else {
-                return new TransactionResult<>("Обновление не выполнено", 0);
+                return null;
             }
-        } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
         }
     }
 
-    public static TransactionResult<Integer> deleteUser(int id) {
+    public static int deleteUser(int id) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("DELETE from users WHERE id=?;");
             statement.setInt(1, id);
-            int count = statement.executeUpdate();
-            if (count > 0) {
-                return new TransactionResult<>(id);
-            } else {
-                return new TransactionResult<>("Удаление не выполнено", 0);
-            }
-        } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
+            return statement.executeUpdate();
         }
     }
 
 
-    public static TransactionResult<ArrayList<User>> getUsers() {
+    public static ArrayList<User> getUsers() throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users;",
-                    Statement.RETURN_GENERATED_KEYS);
-            ResultSet resultSet = statement.executeQuery();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM users;");
             ArrayList<User> data = new ArrayList<>();
             while (resultSet.next()) {
                 data.add(new User(
@@ -148,10 +123,7 @@ public class UserRepository {
                         resultSet.getString(5)
                 ));
             }
-            return new TransactionResult<>(data);
-        } catch (SQLException e) {
-            System.out.printf("%s / %s (%d)", e.getMessage(), e.getSQLState(), e.getErrorCode());
-            return new TransactionResult<>(e.getSQLState(), e.getErrorCode());
+            return data;
         }
     }
 }

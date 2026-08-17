@@ -1,17 +1,17 @@
 import cli.ConsoleApp;
 import service.AdminService;
+import util.AdminOutput;
 import web.WebServer;
-
-import java.security.NoSuchAlgorithmException;
-
 import repository.Database;
 
 public class Main {
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) {
         Database.start();
-        WebServer.start();
-        System.out.printf("Сгенерирован админ-ключ: %s\n", AdminService.generateAdminKey());
-        ConsoleApp.menu();
-        WebServer.stop();
+        if (Database.isReady()) {
+            WebServer.start();
+            AdminOutput.info("Админ-ключ: %s\n".formatted(AdminService.loadAdminKey()));
+            ConsoleApp.menu();
+            WebServer.stop();
+        }
     }
 }
