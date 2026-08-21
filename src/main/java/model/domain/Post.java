@@ -1,9 +1,12 @@
-package model.data;
+package model.domain;
 
-import model.common.DataModel;
-import model.common.DateTime;
+import model.DataModel;
+import model.value.DateTime;
 
-public class Post extends DataModel {
+import java.util.HashMap;
+import java.util.Map;
+
+public class Post implements DataModel {
     private final int id;
     private final int authorId;
     private final Integer hubId;
@@ -56,5 +59,19 @@ public class Post extends DataModel {
 
     public static String getFieldsDescription() {
         return "(id Поста <- id Пользователя / id Хаба) Время создания // Заголовок // Контент";
+    }
+
+
+    @Override
+    public Map<String, String> toPlainTextData() {
+        Map<String, String> map = new HashMap<>(Map.of(
+                "id", Integer.toString(id),
+                "authorId", Integer.toString(authorId),
+                "label", label,
+                "content", content,
+                "creationTime.datetime", creationTime.toString()
+        ));
+        if (hubId!=null) map.put("hubId", Integer.toString(hubId));
+        return map;
     }
 }

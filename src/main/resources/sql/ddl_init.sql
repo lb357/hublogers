@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS users, posts, hubs, votes, sessions;
-
-CREATE TABLE users (
+CREATE TABLE IF NOT EXISTS users (
     id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     username varchar(16) UNIQUE NOT NULL,
     email varchar UNIQUE NOT NULL,
@@ -14,7 +12,7 @@ CREATE TABLE users (
     CONSTRAINT users_check_email_valid CHECK (email LIKE '%@%.%')
 );
 
-CREATE TABLE hubs (
+CREATE TABLE IF NOT EXISTS hubs (
     id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     creator_id int DEFAULT NULL,
     hubname varchar(100) UNIQUE NOT NULL,
@@ -26,7 +24,7 @@ CREATE TABLE hubs (
     CONSTRAINT fk_hubs_users FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL
 );
 
-CREATE TABLE posts (
+CREATE TABLE IF NOT EXISTS posts (
     id int PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     author_id int NOT NULL,
     hub_id int,
@@ -40,7 +38,7 @@ CREATE TABLE posts (
     CONSTRAINT fk_posts_hubs FOREIGN KEY (hub_id) REFERENCES hubs(id) ON DELETE RESTRICT
 );
 
-CREATE TABLE votes (
+CREATE TABLE IF NOT EXISTS votes (
     post_id int,
     voter_id int,
     vote boolean NOT NULL,
@@ -52,7 +50,7 @@ CREATE TABLE votes (
 );
 
 
-CREATE TABLE sessions (
+CREATE TABLE IF NOT EXISTS sessions (
     auth_token varchar PRIMARY KEY UNIQUE NOT NULL,
     user_id int NOT NULL,
     auth_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -60,9 +58,9 @@ CREATE TABLE sessions (
     CONSTRAINT fk_sessions_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_posts_hub_id ON posts(hub_id);
-CREATE INDEX idx_posts_author_id ON posts(author_id);
-CREATE INDEX idx_votes_post_id ON votes(post_id);
-CREATE INDEX idx_sessions_auth_time ON sessions(auth_time);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_posts_hub_id ON posts(hub_id);
+CREATE INDEX IF NOT EXISTS idx_posts_author_id ON posts(author_id);
+CREATE INDEX IF NOT EXISTS idx_votes_post_id ON votes(post_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_auth_time ON sessions(auth_time);
 

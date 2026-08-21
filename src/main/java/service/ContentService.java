@@ -1,12 +1,11 @@
 package service;
 
-import model.common.TransactionResult;
 import model.composite.MetaHub;
 import model.composite.MetaPost;
-import model.data.Hub;
-import model.data.Post;
-import model.data.User;
-import model.data.Vote;
+import model.domain.Hub;
+import model.domain.Post;
+import model.domain.User;
+import model.domain.Vote;
 import repository.composite.MetaHubRepository;
 import repository.composite.MetaPostRepository;
 import repository.data.HubRepository;

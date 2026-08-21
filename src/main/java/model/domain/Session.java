@@ -1,9 +1,12 @@
-package model.data;
+package model.domain;
 
-import model.common.DataModel;
-import model.common.DateTime;
+import model.DataModel;
+import model.value.DateTime;
 
-public class Session extends DataModel {
+import java.util.HashMap;
+import java.util.Map;
+
+public class Session implements DataModel {
     private final String authToken;
     private final int userId;
     private final DateTime authTime;
@@ -34,5 +37,14 @@ public class Session extends DataModel {
 
     public static String getFieldsDescription() {
         return "Токен <-> id Пользователя (Время создания)";
+    }
+
+    @Override
+    public Map<String, String> toPlainTextData() {
+        return Map.of(
+                "authToken", authToken,
+                "userId", Integer.toString(userId),
+                "authTime.datetime", authTime.toString()
+        );
     }
 }

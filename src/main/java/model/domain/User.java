@@ -1,9 +1,13 @@
-package model.data;
+package model.domain;
 
-import model.common.DataModel;
+import model.DataModel;
+import model.value.DateTime;
 import util.SecureStringGenerator;
 
-public class User extends DataModel {
+import java.util.HashMap;
+import java.util.Map;
+
+public class User implements DataModel {
     private final Integer id;
     private final String username;
     private final String email;
@@ -67,5 +71,17 @@ public class User extends DataModel {
 
     public static String getFieldsDescription() {
         return "(id Пользователя) Имя - Статус / Адрес электронной почты - Хэш пароля";
+    }
+
+    @Override
+    public Map<String, String> toPlainTextData() {
+        Map<String, String> map = new HashMap<>(Map.of(
+                "id", Integer.toString(id),
+                "username", username,
+                "status", status
+        ));
+        if (email!=null) map.put("email", email);
+        if (passwordHash!=null) map.put("passwordHash", passwordHash);
+        return map;
     }
 }

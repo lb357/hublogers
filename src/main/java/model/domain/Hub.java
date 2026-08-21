@@ -1,8 +1,12 @@
-package model.data;
+package model.domain;
 
-import model.common.DataModel;
+import model.DataModel;
+import model.value.DateTime;
 
-public class Hub extends DataModel {
+import java.util.HashMap;
+import java.util.Map;
+
+public class Hub implements DataModel {
     private final int id;
     private final Integer creatorId;
     private final String hubname;
@@ -52,5 +56,16 @@ public class Hub extends DataModel {
 
     public static String getFieldsDescription() {
         return "(id Хаба <- id Пользователя) Название - Описание";
+    }
+
+    @Override
+    public Map<String, String> toPlainTextData() {
+        Map<String, String> map = new HashMap<>(Map.of(
+                "id", Integer.toString(id),
+                "hubname", hubname,
+                "description", description
+        ));
+        if(creatorId!=null) map.put("creatorId", Integer.toString(creatorId));
+        return map;
     }
 }

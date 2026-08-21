@@ -1,8 +1,12 @@
-package model.data;
+package model.domain;
 
-import model.common.DataModel;
+import model.DataModel;
+import model.value.DateTime;
 
-public class Vote extends DataModel {
+import java.util.HashMap;
+import java.util.Map;
+
+public class Vote implements DataModel {
     private final int postId;
     private final int voterId;
     private final Boolean vote;
@@ -48,5 +52,14 @@ public class Vote extends DataModel {
 
     public static String getFieldsDescription() {
         return "(id Поста <- id Пользователя) Голос";
+    }
+
+    @Override
+    public Map<String, String> toPlainTextData() {
+        return Map.of(
+                "postId", Integer.toString(postId),
+                "voterId", Integer.toString(voterId),
+                "vote", Boolean.toString(vote)
+        );
     }
 }

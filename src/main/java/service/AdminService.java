@@ -1,45 +1,25 @@
 package service;
 
-import model.common.TransactionResult;
-import model.composite.MetaPost;
+import config.AdminConfig;
 import model.composite.UserStatistic;
-import model.data.*;
+import model.domain.*;
 import repository.composite.UserStatisticRepository;
 import repository.data.*;
 import util.AdminOutput;
 
-import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class AdminService {
-    private static String adminKey;
+    private static final AdminConfig config = new AdminConfig();
 
     public static String loadAdminKey(){
-        boolean loaded = false;
-        try (FileReader fileReader = new FileReader("admin.key")){
-            Scanner scanner = new Scanner(fileReader);
-            adminKey = scanner.nextLine();
-            loaded = true;
-        }
-        catch (FileNotFoundException ignored) {}
-        catch (IOException e) {
-            AdminOutput.error(e);
-        }
-        if (!loaded) {
-            adminKey = util.SecureStringGenerator.getTokenString();
-            try (FileWriter fileWriter = new FileWriter("admin.key")) {
-                fileWriter.write(adminKey);
-            } catch (IOException e) {
-                AdminOutput.error(e);
-            }
-        }
-        return adminKey;
+        config.load();
+        return config.getAdminKey();
     }
 
     public static boolean checkAdminKey(String key) {
-        return key.equals(adminKey);
+        return key.equals(config.getAdminKey());
     }
 
     public static TransactionResult<ArrayList<Hub>> getAllHubs (String key) {

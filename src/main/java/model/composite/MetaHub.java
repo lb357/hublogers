@@ -1,10 +1,14 @@
 package model.composite;
 
-import model.common.DataModel;
-import model.data.Hub;
-import model.data.User;
+import model.DataModel;
+import model.domain.Hub;
+import model.domain.User;
+import model.value.DateTime;
 
-public class MetaHub extends DataModel {
+import java.util.HashMap;
+import java.util.Map;
+
+public class MetaHub implements DataModel {
     private final Hub hub;
     private final User creator;
 
@@ -43,5 +47,13 @@ public class MetaHub extends DataModel {
 
     public static String getFieldsDescription() {
         return "(id Хаба / Название Хаба / id Создателя / Имя создателя)\nОписание хаба\n";
+    }
+
+    @Override
+    public Map<String, String> toPlainTextData() {
+        Map<String, String> map = new HashMap<>();
+        hub.toPlainTextData().forEach((key, value) -> map.put("hub."+key, value));
+        if (creator!=null) creator.toPlainTextData().forEach((key, value) -> map.put("creator."+key, value));
+        return map;
     }
 }

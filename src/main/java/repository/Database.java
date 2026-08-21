@@ -1,23 +1,25 @@
 package repository;
 
+import config.DatabaseConfig;
+import util.AdminOutput;
+import util.ResourceReader;
+
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
+import java.sql.*;
+
 
 public class Database {
-    private static String DRIVER;
-    private static String URL;
-    private static String USERNAME;
-    private static String PASSWORD;
     private static boolean ready;
+    private static final DatabaseConfig config = new DatabaseConfig();
 
     public static void start() {
         System.out.println("Конфигурация базы данных...");
-        loadConfig();
+        config.load();
         ready = checkConnection();
         if (ready) {
+            if (config.isInitDataBase()) {
+                initDatabase();
+            }
             System.out.println("База данных подключена!");
         } else {
             System.out.println("База данных НЕ ПОДКЛЮЧЕНА!");
@@ -32,37 +34,50 @@ public class Database {
         return checkDriver() && checkDB();
     }
 
-    private static void loadConfig(){
-        boolean loaded = false;
-        Properties properties = new Properties();
-
-        try (InputStream input = Database.class.getClassLoader().getResourceAsStream("database.properties")) {
-            properties.load(input);
-            DRIVER = (String) properties.getOrDefault("database-driver", null);
-            URL = (String) properties.getOrDefault("database-url", null);
-            USERNAME = (String) properties.getOrDefault("database-username", null);
-            PASSWORD = (String) properties.getOrDefault("database-password", null);
-            loaded = DRIVER != null && URL != null && USERNAME != null && PASSWORD != null;
-        } catch (FileNotFoundException e) {
-            System.out.printf("Файл database.properties не найден: %s\n", e.getMessage());
-        } catch (Exception e) {
-            System.out.printf("Ошибка чтения файла database.properties: %s\n", e.getMessage());
+    private static void initDatabase(){
+        try (Connection connection = DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword())) {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(ResourceReader.readResource("sql/create_database.sql"));
+        } catch (SQLException e) {
+            if (!e.getSQLState().equals("42P04") || e.getErrorCode() != 0) { // код duplicate_database из документации
+                AdminOutput.error(e);
+            }
         }
-
-        if (!loaded) {
-            System.out.println("В файле database.properties не найдены необходимые поля");
-            System.out.println("Значения database-driver, database-url, database-username, database-password файла database.properties используются по умолчанию");
-            DRIVER = "org.postgresql.Driver";
-            URL = "jdbc:postgresql://localhost/hublogers";
-            USERNAME = "postgres";
-            PASSWORD = "postgres";
+        try (Connection connection = getConnection()) {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(ResourceReader.readResource("sql/ddl_init.sql"));
+        } catch (SQLException e) {
+            AdminOutput.error(e);
         }
-
+        if (config.isInsertExampleData()){
+            boolean execDML = false;
+            try (Connection connection = getConnection()) {
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) FROM posts;");
+                if (resultSet.next()) {
+                    if (resultSet.getInt(1) <= 0) {
+                        execDML = true;
+                    }
+                } else {
+                    AdminOutput.error("Поле count в ответе из базы данных обязано существовать, однако отсутствует");
+                }
+            } catch (SQLException e) {
+                AdminOutput.error(e);
+            }
+            if (execDML) {
+                try (Connection connection = getConnection()) {
+                    Statement statement = connection.createStatement();
+                    statement.executeUpdate(ResourceReader.readResource("sql/dml_init.sql"));
+                } catch (SQLException e) {
+                    AdminOutput.error(e);
+                }
+            }
+        }
     }
 
     private static boolean checkDriver() {
         try {
-            Class.forName(DRIVER);
+            Class.forName(config.getDriver());
             return true;
         } catch (ClassNotFoundException e) {
             System.out.println("Нет JDBC-драйвера! Подключите JDBC-драйвер к проекту согласно инструкции.");
@@ -71,9 +86,8 @@ public class Database {
     }
 
     private static boolean checkDB() {
-        Connection connection = null;
         try {
-            connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            Connection connection = DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword());
             connection.close();
             return true;
         } catch (SQLException e) {
@@ -84,7 +98,7 @@ public class Database {
 
     public static Connection getConnection() throws SQLException {
         if (ready) {
-            Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+            Connection connection = DriverManager.getConnection(config.getFullUrl(), config.getUsername(), config.getPassword());
             if (connection == null || connection.isClosed()) {
                 throw new SQLException("Подключение к базе данных не открылось");
             }

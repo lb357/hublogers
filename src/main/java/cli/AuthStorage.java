@@ -1,7 +1,7 @@
 package cli;
 
-import model.common.TransactionResult;
-import model.data.User;
+import service.TransactionResult;
+import model.domain.User;
 import service.AuthentificationService;
 
 public class AuthStorage {
@@ -20,7 +20,7 @@ public class AuthStorage {
         }
     }
 
-    public static void resetAuthToken() {
+    public static void deleteAuthToken() {
         authToken = "";
     }
 

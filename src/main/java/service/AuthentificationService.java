@@ -1,10 +1,7 @@
 package service;
 
-import model.common.TransactionResult;
-import model.composite.UserStatistic;
-import model.data.Session;
-import model.data.User;
-import repository.composite.UserStatisticRepository;
+import model.domain.Session;
+import model.domain.User;
 import repository.data.SessionRepository;
 import repository.data.UserRepository;
 import util.AdminOutput;

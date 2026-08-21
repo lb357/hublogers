@@ -1,7 +1,7 @@
 package repository.data;
 
-import model.common.DateTime;
-import model.data.Session;
+import model.value.DateTime;
+import model.domain.Session;
 import repository.Database;
 
 import java.sql.*;

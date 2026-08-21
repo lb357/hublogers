@@ -1,8 +1,7 @@
 package repository.composite;
 
-import model.common.TransactionResult;
 import model.composite.UserStatistic;
-import model.data.User;
+import model.domain.User;
 import repository.Database;
 
 import java.sql.*;

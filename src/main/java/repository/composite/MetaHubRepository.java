@@ -1,8 +1,8 @@
 package repository.composite;
 
 import model.composite.MetaHub;
-import model.data.Hub;
-import model.data.User;
+import model.domain.Hub;
+import model.domain.User;
 import repository.Database;
 
 import java.sql.*;

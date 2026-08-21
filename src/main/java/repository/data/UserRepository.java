@@ -1,6 +1,6 @@
 package repository.data;
 
-import model.data.User;
+import model.domain.User;
 import repository.Database;
 
 import java.sql.*;

@@ -1,7 +1,6 @@
 package repository.data;
 
-import model.composite.MetaPost;
-import model.data.Hub;
+import model.domain.Hub;
 import repository.Database;
 
 import java.sql.*;

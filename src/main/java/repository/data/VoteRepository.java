@@ -1,6 +1,6 @@
 package repository.data;
 
-import model.data.Vote;
+import model.domain.Vote;
 import repository.Database;
 
 import java.sql.*;

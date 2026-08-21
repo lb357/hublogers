@@ -1,12 +1,14 @@
 package cli.menu;
 
+//todo рефакторинг рендеры в отдельные классы
+
 import cli.AuthStorage;
 import cli.ConsoleApp;
-import model.common.TransactionResult;
+import service.TransactionResult;
 import model.composite.MetaHub;
 import model.composite.MetaPost;
 import model.composite.UserStatistic;
-import model.data.*;
+import model.domain.*;
 import service.AdminService;
 import service.AuthentificationService;
 import service.ContentService;
@@ -562,7 +564,7 @@ public class MenuLogic {
     public static void renderLogout() {
         System.out.println("Выход...");
         AuthentificationService.logoutUser(AuthStorage.getAuthToken());
-        AuthStorage.resetAuthToken();
+        AuthStorage.deleteAuthToken();
         ConsoleApp.setMenu(Menu.HOME);
     }
 

@@ -1,25 +1,22 @@
 package web;
 
 import com.sun.net.httpserver.HttpServer;
-import repository.Database;
+import config.WebConfig;
+import web.controller.Controller;
+import web.controller.HomeController;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.Inet4Address;
 import java.net.InetSocketAddress;
-import java.util.Properties;
 
 public class WebServer {
     private static HttpServer server;
-    private static Boolean ENABLED;
-    private static String HOSTNAME;
-    private static Integer PORT;
+    private static final WebConfig config = new WebConfig();
 
     public static void start() {
         System.out.println("Конфигурация веб-сервера...");
-        loadConfig();
-        if (ENABLED) {
+        config.load();
+        if (config.isEnabled()) {
             init();
             System.out.printf("Веб-сервер запущен: http:/%s\n", server.getAddress());
         } else {
@@ -29,51 +26,32 @@ public class WebServer {
 
     private static void init() {
         try {
-            server = HttpServer.create(new InetSocketAddress(Inet4Address.getByName(HOSTNAME), PORT), 0);
+            server = HttpServer.create(new InetSocketAddress(Inet4Address.getByName(config.getHostName()), config.getPort()), 0);
+            registerController(new HomeController("/"));
             server.start();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private static void loadConfig() {
-        Properties properties = new Properties();
-        boolean loaded = false;
-        try (InputStream input = Database.class.getClassLoader().getResourceAsStream("webserver.properties")) {
-            properties.load(input);
-            ENABLED = (Boolean)Boolean.parseBoolean((String)properties.getOrDefault("webserver-enabled", null));
-            PORT = (Integer)Integer.parseInt((String) properties.getOrDefault("webserver-port", null));
-            HOSTNAME = (String)properties.getOrDefault("webserver-hostname", null);
-            loaded = PORT != null && ENABLED != null && HOSTNAME != null;
-        } catch (FileNotFoundException e) {
-            System.out.printf("Файл webserver.properties не найден: %s\n", e.getMessage());
-        } catch (Exception e) {
-            System.out.printf("Ошибка чтения файла webserver.properties: %s\n", e.getMessage());
-        }
-
-        if (!loaded) {
-            System.out.println("В файле webserver.properties не найдены необходимые поля");
-            System.out.println("Значения webserver-enabled, webserver-port, webserver-hostname файла webserver.properties используются по умолчанию");
-            ENABLED = false;
-            PORT = 80;
-            HOSTNAME = "127.0.0.1";
-        }
+    private static void registerController(Controller controller){
+        server.createContext(controller.getPath(), controller);
     }
 
     public static Integer getPort() {
-        return PORT;
+        return config.getPort();
     }
 
     public static String getHostname() {
-        return HOSTNAME;
+        return config.getHostName();
     }
 
     public static Boolean isEnabled() {
-        return ENABLED;
+        return config.isEnabled();
     }
 
     public static void stop() {
-        if (ENABLED) {
+        if (config.isEnabled()) {
             System.out.println("Выключение веб-сервера...");
             server.stop(5);
             System.out.println("Веб-сервер выключен");

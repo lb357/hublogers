@@ -1,11 +1,15 @@
 package model.composite;
 
-import model.common.DataModel;
-import model.data.Hub;
-import model.data.Post;
-import model.data.User;
+import model.DataModel;
+import model.domain.Hub;
+import model.domain.Post;
+import model.domain.User;
+import model.value.DateTime;
 
-public class MetaPost extends DataModel {
+import java.util.HashMap;
+import java.util.Map;
+
+public class MetaPost implements DataModel {
     private final Post post;
     private final User author;
     private final Hub hub;
@@ -69,5 +73,18 @@ public class MetaPost extends DataModel {
 
     public static String getFieldsDescription() {
         return "(id Поста / Имя Пользователя / id Хаба / Название Хаба) Время создания\nЗаголовок [Рейтинг]\n";
+    }
+
+
+    @Override
+    public Map<String, String> toPlainTextData() {
+        Map<String, String> map = new HashMap<>(Map.of(
+                "likes", Integer.toString(likes),
+                "dislikes", Integer.toString(dislikes)
+        ));
+        post.toPlainTextData().forEach((key, value) -> map.put("post."+key, value));
+        if (author!=null) author.toPlainTextData().forEach((key, value) -> map.put("author."+key, value));
+        if (hub!=null) hub.toPlainTextData().forEach((key, value) -> map.put("hub."+key, value));
+        return map;
     }
 }

@@ -1,10 +1,10 @@
 package repository.composite;
 
-import model.common.DateTime;
+import model.value.DateTime;
 import model.composite.MetaPost;
-import model.data.Hub;
-import model.data.Post;
-import model.data.User;
+import model.domain.Hub;
+import model.domain.Post;
+import model.domain.User;
 import repository.Database;
 
 import java.sql.*;
