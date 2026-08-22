@@ -1,24 +1,22 @@
 package cli;
 
-import cli.menu.Menu;
-import cli.menu.MenuLogic;
+import cli.page.HomePage;
+import cli.page.Page;
 
 public class ConsoleApp {
     private static boolean working = true;
-    private static Menu currentMenu = Menu.HOME;
+    private static Page currentPage = new HomePage();
 
     public static void menu() {
         while (working) {
-            MenuLogic.renderSeparator(currentMenu.getMenuName());
-            Runnable renderer = currentMenu.getRenderer();
-            renderer.run();
-            if (currentMenu == null) {
+            currentPage.renderPage();
+            if (currentPage == null) {
                 working = false;
             }
         }
     }
 
-    public static void setMenu(Menu currentMenu) {
-        ConsoleApp.currentMenu = currentMenu;
+    public static void setPage(Page currentPage) {
+        ConsoleApp.currentPage = currentPage;
     }
 }

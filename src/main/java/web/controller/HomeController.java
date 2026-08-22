@@ -1,6 +1,7 @@
 package web.controller;
 
 import com.sun.net.httpserver.HttpExchange;
+import web.StatusCode;
 import web.ViewRenderer;
 
 import java.io.IOException;
@@ -12,7 +13,12 @@ public class HomeController extends Controller {
     }
 
     @Override
-    public void get(HttpExchange exchange, Map<String, String> query) throws IOException {
+    public void get(HttpExchange exchange, Map<String, String> urlQuery) throws IOException {
         sendHTML(exchange, ViewRenderer.loadViewResource("index.html"));
+    }
+
+    @Override
+    public void post(HttpExchange exchange, Map<String, String> bodyQuery) throws IOException {
+        sendStatusCode(exchange, StatusCode.METHOD_NOT_ALLOWED);
     }
 }
