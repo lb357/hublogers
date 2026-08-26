@@ -3,6 +3,12 @@ package cli.page;
 import cli.AuthStorage;
 import cli.ConsoleApp;
 import cli.MenuElement;
+import cli.page.auth.LoginPage;
+import cli.page.auth.LogoutPage;
+import cli.page.auth.SignupPage;
+import cli.page.hub.HubsPage;
+import cli.page.post.PostsPage;
+import cli.page.user.ProfilePage;
 
 public class HomePage extends Page {
     @Override
