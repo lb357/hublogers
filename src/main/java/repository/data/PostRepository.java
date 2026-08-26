@@ -11,7 +11,7 @@ public class PostRepository {
     public static Post createPost(int authorId, Integer hubId, String label, String content) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO posts (author_id, hub_id, label, content) VALUES (?, ?, ?, ?) returning *;",
+                    "INSERT INTO posts (author_id, hub_id, label, content) VALUES (?, ?, ?, ?) returning id, creation_time;",
                     Statement.RETURN_GENERATED_KEYS
             );
             statement.setInt(1, authorId);
@@ -28,11 +28,11 @@ public class PostRepository {
             if (resultSet.next()) {
                 return new Post(
                         resultSet.getInt(1),
-                        resultSet.getInt(2),
-                        resultSet.getInt(3),
-                        resultSet.getString(4),
-                        resultSet.getString(5),
-                        new DateTime(resultSet.getTimestamp(6))
+                        authorId,
+                        hubId,
+                        label,
+                        content,
+                        new DateTime(resultSet.getTimestamp(2))
                 );
             } else {
                 throw new SQLException("Ожидалось создание новой записи, однако запись не была создана");

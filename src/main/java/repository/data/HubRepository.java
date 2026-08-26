@@ -10,7 +10,7 @@ public class HubRepository {
     public static Hub createHub(int creatorId, String hubname, String description) throws SQLException {
                 try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO hubs (creator_id, hubname, description) VALUES (?, ?, ?) returning *;",
+                    "INSERT INTO hubs (creator_id, hubname, description) VALUES (?, ?, ?) returning id;",
                     Statement.RETURN_GENERATED_KEYS
             );
             statement.setInt(1, creatorId);
@@ -21,9 +21,9 @@ public class HubRepository {
             if (resultSet.next()) {
                 return new Hub(
                         resultSet.getInt(1),
-                        resultSet.getInt(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4)
+                        creatorId,
+                        hubname,
+                        description
                 );
             } else {
                 throw new SQLException("Ожидалось создание новой записи, однако запись не была создана");

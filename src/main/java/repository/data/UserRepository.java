@@ -10,7 +10,7 @@ public class UserRepository {
     public static User createUser(String username, String email, String passwordHash) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?) returning *;",
+                    "INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?) returning id, status;",
                     Statement.RETURN_GENERATED_KEYS
             );
             statement.setString(1, username);
@@ -21,10 +21,10 @@ public class UserRepository {
             if (resultSet.next()) {
                 return new User(
                         resultSet.getInt(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4),
-                        resultSet.getString(5)
+                        username,
+                        email,
+                        passwordHash,
+                        resultSet.getString(2)
                 );
             } else {
                 throw new SQLException("Ожидалось создание новой записи, однако запись не была создана");

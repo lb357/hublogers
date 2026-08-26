@@ -11,7 +11,7 @@ public class SessionRepository {
     public static Session createSession(String authToken, int user_id) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "INSERT INTO sessions (auth_token, user_id) VALUES (?, ?) returning *; ",
+                    "INSERT INTO sessions (auth_token, user_id) VALUES (?, ?) returning auth_time;",
                     Statement.RETURN_GENERATED_KEYS
             );
             statement.setString(1, authToken);
@@ -20,9 +20,9 @@ public class SessionRepository {
             ResultSet resultSet = statement.getGeneratedKeys();
             if (resultSet.next()) {
                 return new Session(
-                        resultSet.getString(1),
-                        resultSet.getInt(2),
-                        new DateTime(resultSet.getTimestamp(3))
+                        authToken,
+                        user_id,
+                        new DateTime(resultSet.getTimestamp(1))
                 );
             } else {
                 throw new SQLException("Ожидалось создание новой записи, однако запись не была создана");

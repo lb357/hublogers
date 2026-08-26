@@ -10,7 +10,6 @@ public class VoteRepository {
     public static Vote votePostByUser(int postId, int voterId, boolean vote) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             Vote currentVote = getVote(postId, voterId);
-            ResultSet resultSet;
             PreparedStatement statement;
 
             if (currentVote.get() != null) {
@@ -28,7 +27,7 @@ public class VoteRepository {
                     }
                 } else {
                     statement = connection.prepareStatement(
-                            "UPDATE votes SET vote = ? WHERE post_id = ? AND voter_id = ? RETURNING *;"
+                            "UPDATE votes SET vote = ? WHERE post_id = ? AND voter_id = ?;"
                     );
                     statement.setBoolean(1, vote);
                     statement.setInt(2, postId);
@@ -36,20 +35,18 @@ public class VoteRepository {
                 }
             } else {
                 statement = connection.prepareStatement(
-                        "INSERT INTO votes (post_id, voter_id, vote) VALUES (?, ?, ?) returning *;",
-                        Statement.RETURN_GENERATED_KEYS
+                        "INSERT INTO votes (post_id, voter_id, vote) VALUES (?, ?, ?);"
                 );
                 statement.setInt(1, postId);
                 statement.setInt(2, voterId);
                 statement.setBoolean(3, vote);
             }
-            statement.executeUpdate();
-            resultSet = statement.getGeneratedKeys();
-            if (resultSet.next()) {
+            int count = statement.executeUpdate();
+            if (count > 0) {
                 return new Vote(
-                        resultSet.getInt(1),
-                        resultSet.getInt(2),
-                        resultSet.getBoolean(3)
+                        postId,
+                        voterId,
+                        vote
                 );
             } else {
                 throw new SQLException(

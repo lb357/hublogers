@@ -49,7 +49,7 @@ public class ContentService {
     }
 
     public static TransactionResult<Post> createPost(String authToken, Integer hubId, String label, String content) {
-        if (authToken == null || hubId == null || label == null || content == null || label.isBlank() || content.isBlank()) {
+        if (authToken == null || label == null || content == null || label.isBlank() || content.isBlank()) {
             return TransactionResult.failResponse("Отсутствуют необходимые поля");
         }
         try {
