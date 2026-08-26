@@ -1,0 +1,10 @@
+<h2>🔎Поиск</h2>
+<form action="/find" method="get">
+    <label for="query">Запрос:</label>
+    <input type="search" name="query" id="query" value="{{ query }}">
+    <label for="page">Страница:</label>
+    <input type="number" name="page" id="page" min="1" max="{{ max-page }}" value="{{ current-page }}">
+    <button type="submit">Искать</button>
+</form>
+<hr>
+{{ result }}

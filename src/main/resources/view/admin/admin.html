@@ -1,0 +1,30 @@
+<h2>Админ-панель</h2>
+<hr>
+<h3>Данные из всех таблиц базы данных</h3>
+{{ votes-table }}
+<br>
+{{ posts-table }}
+<br>
+{{ hubs-table }}
+<br>
+{{ session-table }}
+<br>
+{{ users-table }}
+<hr>
+<h3>Удалить</h3>
+<form action="/admin" method="post">
+    <label for="entity">Сущность: </label>
+    <select name="entity" id="entity">
+        <option value="post">Пост</option>
+        <option value="user">Пользователь</option>
+        <option value="hub">Хаб</option>
+    </select>
+    <label for="id">id:</label>
+    <input type="number" id="id" name="id" required >
+    <label for="admin-key">Админ-ключ:</label>
+    <input type="password" id="admin-key" name="admin-key" required value="{{ admin-key }}">
+    <button type="submit">Отправить</button>
+</form>
+<hr>
+<h3>Статистика</h3>
+{{ statistic-table }}

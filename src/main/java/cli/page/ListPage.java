@@ -35,7 +35,8 @@ public class ListPage<T> extends Page {
                 if (data == null || data.isEmpty()) {
                     renderFailMessage("Посты не найдены...");
                 } else {
-                    System.out.printf("Формат:\n%s\nСтраница: %d/%d\n\n", MetaPost.getFieldsDescription(), currentPage + 1, maxPage + 1);
+                    String description = "(id Поста / Имя Пользователя / id Хаба / Название Хаба) Время создания\nЗаголовок [Рейтинг]\n";
+                    System.out.printf("Формат:\n%s\nСтраница: %d/%d\n\n", description, currentPage + 1, maxPage + 1);
                     data.forEach(System.out::println);
                     System.out.println("1) Просмотреть");
                     System.out.println("2) Предыдущая страница");

@@ -33,7 +33,7 @@ public class AdminPage extends Page {
                     }
                     case 1 -> {
                         System.out.println("Данные из таблицы users\nФормат:");
-                        System.out.println(User.getFieldsDescription());
+                        System.out.println("(id Пользователя) Имя - Статус / Адрес электронной почты - Хэш пароля");
                         System.out.println();
                         TransactionResult<ArrayList<User>> transactionResult = AdminService.getAllUsers(adminKey);
                         if (transactionResult.isSuccess()){
@@ -44,9 +44,9 @@ public class AdminPage extends Page {
                     }
                     case 2 -> {
                         System.out.println("Данные из таблицы sessions\nФормат:");
-                        System.out.println(Session.getFieldsDescription());
+                        System.out.println("Токен <-> id Пользователя (Время создания)");
                         System.out.println();
-                        TransactionResult<ArrayList<Session>> transactionResult = AdminService.getAllSession(adminKey);
+                        TransactionResult<ArrayList<Session>> transactionResult = AdminService.getAllSessions(adminKey);
                         if (transactionResult.isSuccess()){
                             transactionResult.getData().forEach(System.out::println);
                         } else {
@@ -55,7 +55,7 @@ public class AdminPage extends Page {
                     }
                     case 3 -> {
                         System.out.println("Данные из таблицы hubs\nФормат:");
-                        System.out.println(Hub.getFieldsDescription());
+                        System.out.println("(id Хаба <- id Пользователя) Название - Описание");
                         System.out.println();
                         TransactionResult<ArrayList<Hub>> transactionResult = AdminService.getAllHubs(adminKey);
                         if (transactionResult.isSuccess()){
@@ -66,7 +66,7 @@ public class AdminPage extends Page {
                     }
                     case 4 -> {
                         System.out.println("Данные из таблицы posts\nФормат:");
-                        System.out.println(Hub.getFieldsDescription());
+                        System.out.println("(id Хаба <- id Пользователя) Название - Описание");
                         System.out.println();
                         TransactionResult<ArrayList<Post>> transactionResult = AdminService.getAllPosts(adminKey);
                         if (transactionResult.isSuccess()){
@@ -77,7 +77,7 @@ public class AdminPage extends Page {
                     }
                     case 5 -> {
                         System.out.println("Данные из таблицы votes\nФормат:");
-                        System.out.println(Hub.getFieldsDescription());
+                        System.out.println("(id Поста <- id Пользователя) Голос");
                         System.out.println();
                         TransactionResult<ArrayList<Vote>> transactionResult = AdminService.getAllVotes(adminKey);
                         if (transactionResult.isSuccess()){
@@ -100,7 +100,7 @@ public class AdminPage extends Page {
                     }
                     case 9 -> {
                         System.out.println("Статистика пользователей (данные из всех таблиц)\nФормат:");
-                        System.out.println(UserStatistic.getFieldsDescription());
+                        System.out.println("(id Пользователя - Имя Пользователя) Количество Постов / Количество Хабов / Количество Голосов / Количество активных сессий");
                         System.out.println();
                         TransactionResult<ArrayList<UserStatistic>> transactionResult = AdminService.getAllUsersStatistic(adminKey);
                         if (transactionResult.isSuccess()){

@@ -4,7 +4,6 @@ import model.DataModel;
 import model.domain.Hub;
 import model.domain.Post;
 import model.domain.User;
-import model.value.DateTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -69,10 +68,6 @@ public class MetaPost implements DataModel {
                     dislikes
             );
         }
-    }
-
-    public static String getFieldsDescription() {
-        return "(id Поста / Имя Пользователя / id Хаба / Название Хаба) Время создания\nЗаголовок [Рейтинг]\n";
     }
 
 

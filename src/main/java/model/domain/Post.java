@@ -57,10 +57,6 @@ public class Post implements DataModel {
     }
 
 
-    public static String getFieldsDescription() {
-        return "(id Поста <- id Пользователя / id Хаба) Время создания // Заголовок // Контент";
-    }
-
 
     @Override
     public Map<String, String> toPlainTextData() {
@@ -69,7 +65,8 @@ public class Post implements DataModel {
                 "authorId", Integer.toString(authorId),
                 "label", label,
                 "content", content,
-                "creationTime.datetime", creationTime.toString()
+                "creationTime.datetime", creationTime.toString(),
+                "creationTime", Long.toString(creationTime.getTime())
         ));
         if (hubId!=null) map.put("hubId", Integer.toString(hubId));
         return map;

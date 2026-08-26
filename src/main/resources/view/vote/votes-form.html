@@ -1,0 +1,10 @@
+<form action="/post" method="post">
+    <input type="hidden" name="id" value="{{ post.id }}">
+    <input type="hidden" name="vote" value="like">
+    <button type="submit" {{ like-attribute }}>👍 {{ likes }}</button>
+</form>
+<form action="/post" method="post">
+    <input type="hidden" name="id" value="{{ post.id }}">
+    <input type="hidden" name="vote" value="dislike">
+    <button type="submit" {{ dislike-attribute }}>👎 {{ dislikes }}</button>
+</form>

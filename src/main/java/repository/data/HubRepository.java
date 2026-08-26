@@ -29,7 +29,7 @@ public class HubRepository {
                 throw new SQLException("Ожидалось создание новой записи, однако запись не была создана");
             }
         } catch (SQLException e) {
-            if (e.getErrorCode() == 23505) {
+            if (e.getSQLState().equals("23505")) {
                 return null;
             } else {
                 throw e;

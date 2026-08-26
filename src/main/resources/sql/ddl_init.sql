@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS hubs (
     CONSTRAINT hubs_check_hubname_not_empty CHECK (trim(hubname) <> ''),
     CONSTRAINT hubs_check_description_not_empty CHECK (trim(description) <> ''),
 
-    CONSTRAINT fk_hubs_users FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE SET NULL
+    CONSTRAINT fk_hubs_users FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS posts (
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS posts (
     CONSTRAINT posts_check_label_not_empty CHECK (label IS NOT NULL AND trim(label) <> ''),
 
     CONSTRAINT fk_posts_users FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE,
-    CONSTRAINT fk_posts_hubs FOREIGN KEY (hub_id) REFERENCES hubs(id) ON DELETE RESTRICT
+    CONSTRAINT fk_posts_hubs FOREIGN KEY (hub_id) REFERENCES hubs(id) ON DELETE SET NULL
 );
 
 CREATE TABLE IF NOT EXISTS votes (
@@ -57,10 +57,3 @@ CREATE TABLE IF NOT EXISTS sessions (
 
     CONSTRAINT fk_sessions_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-
-CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
-CREATE INDEX IF NOT EXISTS idx_posts_hub_id ON posts(hub_id);
-CREATE INDEX IF NOT EXISTS idx_posts_author_id ON posts(author_id);
-CREATE INDEX IF NOT EXISTS idx_votes_post_id ON votes(post_id);
-CREATE INDEX IF NOT EXISTS idx_sessions_auth_time ON sessions(auth_time);
-

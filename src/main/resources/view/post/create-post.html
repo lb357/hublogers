@@ -1,0 +1,9 @@
+<h2>📝Создание поста</h2>
+<form action="/create/post" method="post">
+    <label for="label">Заголовок:</label>
+    <input type="text" id="label" name="label" required>
+    <label for="content">Текст:</label>
+    <textarea name="content" id="content"></textarea>
+    <input type="hidden" id="hub-id" name="hub-id" value="{{ hub-id-attribute }}" readonly>
+    <button type="submit">Создать</button>
+</form>

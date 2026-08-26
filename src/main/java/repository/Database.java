@@ -39,7 +39,7 @@ public class Database {
             Statement statement = connection.createStatement();
             statement.executeUpdate(ResourceReader.readResource("sql/create_database.sql"));
         } catch (SQLException e) {
-            if (!e.getSQLState().equals("42P04") || e.getErrorCode() != 0) { // код duplicate_database из документации
+            if (!e.getSQLState().equals("42P04") || e.getErrorCode() != 0) { // 42P04 код duplicate_database
                 AdminOutput.error(e);
             }
         }

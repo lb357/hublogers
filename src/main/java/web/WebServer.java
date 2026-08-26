@@ -2,8 +2,7 @@ package web;
 
 import com.sun.net.httpserver.HttpServer;
 import config.WebConfig;
-import web.controller.Controller;
-import web.controller.HomeController;
+import web.controller.*;
 
 import java.io.IOException;
 import java.net.Inet4Address;
@@ -12,6 +11,26 @@ import java.net.InetSocketAddress;
 public class WebServer {
     private static HttpServer server;
     private static final WebConfig config = new WebConfig();
+
+    public static void registerControllers(){
+        registerController(new HomeController("/"));
+        registerController(new StylesController("/styles.css"));
+        registerController(new AdminController("/admin"));
+        registerController(new CreateHubController("/create/hub"));
+        registerController(new CreatePostController("/create/post"));
+        registerController(new FindController("/find"));
+        registerController(new HubController("/hub"));
+        registerController(new HubsController("/hubs"));
+        registerController(new LastController("/last"));
+        registerController(new LoginController("/login"));
+        registerController(new LogoutController("/logout"));
+        registerController(new PostController("/post"));
+        registerController(new ProfileController("/profile"));
+        registerController(new SignupController("/signup"));
+        registerController(new TopController("/top"));
+        registerController(new UserController("/user"));
+        registerController(new ErrorController("/error"));
+    }
 
     public static void start() {
         System.out.println("Конфигурация веб-сервера...");
@@ -27,7 +46,7 @@ public class WebServer {
     private static void init() {
         try {
             server = HttpServer.create(new InetSocketAddress(Inet4Address.getByName(config.getHostName()), config.getPort()), 0);
-            registerController(new HomeController("/"));
+            registerControllers();
             server.start();
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -49,11 +49,6 @@ public class Vote implements DataModel {
         }
     }
 
-
-    public static String getFieldsDescription() {
-        return "(id Поста <- id Пользователя) Голос";
-    }
-
     @Override
     public Map<String, String> toPlainTextData() {
         return Map.of(

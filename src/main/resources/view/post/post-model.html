@@ -1,0 +1,8 @@
+<div class="model-container">
+    <a href="/post?id={{ post.id }}">{{ post.label }}</a>
+    <a href="/user?id={{ author.id }}">/ от {{ author.username }}</a>
+    <a href="/hub?id={{ hub.id }}" {{ hub-attribute }}> в {{ hub.hubname }}</a>
+    {{ vote/votes-display }}
+    <p>{{ post.creationTime.datetime }}</p>
+</div>
+<br>

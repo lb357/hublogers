@@ -14,7 +14,11 @@ public class HomeController extends Controller {
 
     @Override
     public void get(HttpExchange exchange, Map<String, String> urlQuery) throws IOException {
-        sendHTML(exchange, ViewRenderer.loadViewResource("index.html"));
+        sendHtml(exchange,
+                ViewRenderer.fromResource("base").renderNav(isAuthenticated(exchange)).renderBase(
+                        "home"
+                ).get()
+        );
     }
 
     @Override

@@ -26,5 +26,4 @@ public class AdminOutput {
             error("Ошибка административного вывода: %s".formatted(e.getMessage()));
         }
     }
-
 }

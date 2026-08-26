@@ -1,0 +1,24 @@
+<h2>😎{{ username }}</h2>
+<h3>{{ status }}</h3>
+<hr>
+<form action="/profile" method="post">
+    <label for="status">Изменить статус на:</label>
+    <input type="text" name="status" id="status" value="{{ status }}">
+    <button type="submit">Применить изменения</button>
+</form>
+<hr>
+<a href="/create/post">Создать пост</a>
+<h3>Посты:</h3>
+{{ post-result }}
+<form action="/profile" method="get">
+    <input type="number" name="post-page" id="post-page" min="1" max="{{ max-post-page }}" value="{{ current-post-page }}">
+    <button type="submit">Просмотреть</button>
+</form>
+<hr>
+<a href="/create/hub">Создать хаб</a>
+<h3>Хабы:</h3>
+{{ hub-result }}
+<form action="/profile" method="get">
+    <input type="number" name="hub-page" id="hub-page" min="1" max="{{ max-hub-page }}" value="{{ current-hub-page }}">
+    <button type="submit">Просмотреть</button>
+</form>

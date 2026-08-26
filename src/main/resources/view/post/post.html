@@ -1,0 +1,9 @@
+<h2>📌{{ post.label }}</h2>
+<a href="/user?id={{ author.id }}">Автор: {{ author.username }}</a>
+<br>
+<a href="/hub?id={{ hub.id }}" {{ hub-attribute }}>Хаб: {{ hub.hubname }}</a>
+<p>Время создания: {{ post.creationTime.datetime }}</p>
+<hr>
+<p>{{ post.content }}</p>
+<br>
+{{ votes }}

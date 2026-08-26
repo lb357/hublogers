@@ -54,10 +54,6 @@ public class Hub implements DataModel {
     }
 
 
-    public static String getFieldsDescription() {
-        return "(id Хаба <- id Пользователя) Название - Описание";
-    }
-
     @Override
     public Map<String, String> toPlainTextData() {
         Map<String, String> map = new HashMap<>(Map.of(

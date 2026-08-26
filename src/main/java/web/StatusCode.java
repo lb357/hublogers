@@ -5,6 +5,7 @@ public enum StatusCode {
     BAD_REQUEST(400),
     ACCESS_DENIED(403),
     NOT_FOUND(404),
+    REDIRECT(302),
     METHOD_NOT_ALLOWED(405);
 
 

@@ -3,7 +3,6 @@ package model.composite;
 import model.DataModel;
 import model.domain.Hub;
 import model.domain.User;
-import model.value.DateTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -42,11 +41,6 @@ public class MetaHub implements DataModel {
                     hub.getDescription()
             );
         }
-    }
-
-
-    public static String getFieldsDescription() {
-        return "(id Хаба / Название Хаба / id Создателя / Имя создателя)\nОписание хаба\n";
     }
 
     @Override

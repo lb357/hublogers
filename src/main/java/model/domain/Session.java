@@ -35,16 +35,13 @@ public class Session implements DataModel {
     }
 
 
-    public static String getFieldsDescription() {
-        return "Токен <-> id Пользователя (Время создания)";
-    }
-
     @Override
     public Map<String, String> toPlainTextData() {
         return Map.of(
                 "authToken", authToken,
                 "userId", Integer.toString(userId),
-                "authTime.datetime", authTime.toString()
+                "authTime.datetime", authTime.toString(),
+                "authTime", Long.toString(authTime.getTime())
         );
     }
 }

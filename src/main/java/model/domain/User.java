@@ -68,11 +68,6 @@ public class User implements DataModel {
         }
     }
 
-
-    public static String getFieldsDescription() {
-        return "(id Пользователя) Имя - Статус / Адрес электронной почты - Хэш пароля";
-    }
-
     @Override
     public Map<String, String> toPlainTextData() {
         Map<String, String> map = new HashMap<>(Map.of(

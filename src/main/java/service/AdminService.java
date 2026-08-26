@@ -48,7 +48,7 @@ public class AdminService {
         }
     }
 
-    public static TransactionResult<ArrayList<Session>> getAllSession (String key) {
+    public static TransactionResult<ArrayList<Session>> getAllSessions(String key) {
         if (checkAdminKey(key)) {
             try {
                 return TransactionResult.successResponse(SessionRepository.getSessions());

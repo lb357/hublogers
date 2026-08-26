@@ -2,7 +2,6 @@ package model.composite;
 
 import model.DataModel;
 import model.domain.User;
-import model.value.DateTime;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,18 +47,13 @@ public class UserStatistic implements DataModel {
     }
 
 
-    public static String getFieldsDescription() {
-        return "(id Пользователя - Имя Пользователя) Количество Постов / Количество Хабов / Количество Голосов / Количество активных сессий";
-    }
-
-
     @Override
     public Map<String, String> toPlainTextData() {
         Map<String, String> map = new HashMap<>(Map.of(
                 "postCount", Integer.toString(postCount),
-                "hubCount", Integer.toString(postCount),
-                "voteCount", Integer.toString(postCount),
-                "activeSessionCount", Integer.toString(postCount)
+                "hubCount", Integer.toString(hubCount),
+                "voteCount", Integer.toString(voteCount),
+                "activeSessionCount", Integer.toString(activeSessionCount)
         ));
         user.toPlainTextData().forEach((key, value) -> map.put("user."+key, value));
         return map;

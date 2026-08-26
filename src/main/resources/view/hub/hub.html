@@ -1,0 +1,12 @@
+<h2>🌐{{ hub.hubname }}</h2>
+<h3>{{ hub.description }}</h3>
+<a href="/user?id={{ creator.id }}">Создатель: {{ creator.username }}</a>
+<br>
+<a href="/create/post?hub-id={{ hub.id }}" {{ authenticated-attribute }}>Создать пост в хабе</a>
+<hr>
+{{ result }}
+<form action="/hub" method="get">
+    <input type="hidden" name="id" id="id" value="{{ hub.id }}">
+    <input type="number" name="page" id="page" min="1" max="{{ max-page }}" value="{{ current-page }}">
+    <button type="submit">Просмотреть</button>
+</form>
