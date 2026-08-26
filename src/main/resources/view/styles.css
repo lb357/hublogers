@@ -11,23 +11,14 @@ h1 {
     text-align: center;
 }
 
-
-button {
+button, input, textarea {
     background: Gainsboro;
     border-radius: 4px;
     padding: 4px;
 }
 
-input {
-    background: Gainsboro;
-    border-radius: 4px;
-    padding: 4px;
-}
-
-textarea {
-    background: Gainsboro;
-    border-radius: 4px;
-    padding: 4px;
+td, th {
+  border: 1px solid black;
 }
 
 nav {
