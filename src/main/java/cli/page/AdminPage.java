@@ -4,7 +4,7 @@ import cli.ConsoleApp;
 import model.composite.UserStatistic;
 import model.domain.*;
 import service.AdminService;
-import service.TransactionResult;
+import model.TransactionResult;
 
 import java.util.ArrayList;
 

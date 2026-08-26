@@ -1,0 +1,8 @@
+<h2>✏️Редактирование поста</h2>
+<h3>{{ post.label }}</h3>
+<form action="/edit/post" method="post">
+    <input type="hidden" id="id" name="id" value="{{ post.id }}" readonly>
+    <label for="content">Текст:</label>
+    <textarea name="content" id="content">{{ post.content }}</textarea>
+    <button type="submit">Редактировать</button>
+</form>

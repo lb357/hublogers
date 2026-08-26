@@ -18,6 +18,7 @@ public class WebServer {
         registerController(new AdminController("/admin"));
         registerController(new CreateHubController("/create/hub"));
         registerController(new CreatePostController("/create/post"));
+        registerController(new EditPostController("/edit/post"));
         registerController(new FindController("/find"));
         registerController(new HubController("/hub"));
         registerController(new HubsController("/hubs"));

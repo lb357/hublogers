@@ -7,8 +7,7 @@ import model.composite.MetaHub;
 import model.composite.MetaPost;
 import service.AuthentificationService;
 import service.ContentService;
-import service.TransactionResult;
-import web.StatusCode;
+import model.TransactionResult;
 import web.ViewRenderer;
 
 import java.io.IOException;
@@ -84,7 +83,12 @@ public class ProfileController extends Controller {
 
     @Override
     public void post(HttpExchange exchange, Map<String, String> bodyQuery) throws IOException {
-        sendStatusCode(exchange, StatusCode.METHOD_NOT_ALLOWED);
-        //todo change status
+        if (isAuthenticated(exchange) && !bodyQuery.get("status").isEmpty()) {
+            TransactionResult<User> userTransactionResult = ContentService.updateUser(getAuthToken(exchange), bodyQuery.get("status"));
+            if (assertAction(exchange, userTransactionResult)) return;
+            redirect(exchange, "/profile");
+        } else {
+            redirectToError(exchange, "Некорректные параметры");
+        }
     }
 }

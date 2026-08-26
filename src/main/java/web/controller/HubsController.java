@@ -4,7 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import model.DataModel;
 import model.composite.MetaHub;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 import web.StatusCode;
 import web.ViewRenderer;
 

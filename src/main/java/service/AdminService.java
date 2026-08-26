@@ -1,6 +1,7 @@
 package service;
 
 import config.AdminConfig;
+import model.TransactionResult;
 import model.composite.UserStatistic;
 import model.domain.*;
 import repository.composite.UserStatisticRepository;

@@ -4,7 +4,7 @@ import cli.AuthStorage;
 import cli.ConsoleApp;
 import model.domain.Hub;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 
 public class CreateHubPage extends Page {
     @Override

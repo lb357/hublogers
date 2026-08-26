@@ -1,8 +1,7 @@
 package cli.page;
 
 import cli.ConsoleApp;
-import model.composite.MetaPost;
-import service.TransactionResult;
+import model.TransactionResult;
 
 import java.util.ArrayList;
 import java.util.function.Function;

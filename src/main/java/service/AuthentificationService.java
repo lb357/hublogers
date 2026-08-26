@@ -1,5 +1,6 @@
 package service;
 
+import model.TransactionResult;
 import model.domain.Session;
 import model.domain.User;
 import repository.data.SessionRepository;

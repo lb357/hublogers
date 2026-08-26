@@ -6,7 +6,7 @@ import model.domain.User;
 import model.composite.MetaHub;
 import model.composite.MetaPost;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 import web.StatusCode;
 import web.ViewRenderer;
 
@@ -28,7 +28,7 @@ public class UserController extends Controller {
             if (assertAction(exchange, userTransactionResult)) return;
             user = userTransactionResult.getData();
         } else {
-            redirectToError(exchange, "Некорректный id пользователя");
+            redirectToError(exchange, "Некорректные параметры");
             return;
         }
 

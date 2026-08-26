@@ -1,6 +1,6 @@
 package cli;
 
-import service.TransactionResult;
+import model.TransactionResult;
 import model.domain.User;
 import service.AuthentificationService;
 

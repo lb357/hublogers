@@ -1,5 +1,6 @@
 package service;
 
+import model.TransactionResult;
 import model.composite.MetaHub;
 import model.composite.MetaPost;
 import model.domain.Hub;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 
 public class ContentService {
     public static TransactionResult<Hub> createHub(String authToken, String hubname, String description) {
-        if (hubname == null || description == null || hubname.isBlank() || description.isBlank()) {
+        if (authToken == null || hubname == null || description == null || hubname.isBlank() || description.isBlank()) {
             return TransactionResult.failResponse("Отсутствуют необходимые поля");
         }
         try {
@@ -48,7 +49,7 @@ public class ContentService {
     }
 
     public static TransactionResult<Post> createPost(String authToken, Integer hubId, String label, String content) {
-        if (label == null || content == null || label.isBlank() || content.isBlank()) {
+        if (authToken == null || hubId == null || label == null || content == null || label.isBlank() || content.isBlank()) {
             return TransactionResult.failResponse("Отсутствуют необходимые поля");
         }
         try {
@@ -75,9 +76,12 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<Post> updatePost(String authToken, int postId, String content) {
-        if (content == null || content.isBlank()){
-            return TransactionResult.failResponse("Отсутствует контент поста");
+    public static TransactionResult<Post> updatePost(String authToken, Integer postId, String content) {
+        if (authToken == null) return TransactionResult.failResponse("Отсутствует authToken");
+        if (postId == null) return TransactionResult.failResponse("Отсутствует postId");
+        if (content == null) return TransactionResult.failResponse("Отсутствует content");
+        if (content.isBlank()){
+            return TransactionResult.failResponse("Текст поста пустой");
         }
 
         try {
@@ -105,8 +109,10 @@ public class ContentService {
     }
 
     public static TransactionResult<User> updateUser(String authToken, String status) {
-        if (status == null || status.isBlank()){
-            return TransactionResult.failResponse("Отсутствует статус пользователя");
+        if (authToken == null) return TransactionResult.failResponse("Отсутствует authToken");
+        if (status == null) return TransactionResult.failResponse("Отсутствует status");
+        if (status.isBlank()){
+            return TransactionResult.failResponse("Статус пользователя пустой");
         }
 
         try {
@@ -123,7 +129,10 @@ public class ContentService {
     }
 
 
-    private static TransactionResult<Vote> votePost(String authToken, int postId, boolean vote) {
+    private static TransactionResult<Vote> votePost(String authToken, Integer postId, Boolean vote) {
+        if (authToken == null) return TransactionResult.failResponse("Отсутствует authToken");
+        if (postId == null) return TransactionResult.failResponse("Отсутствует postId");
+        if (vote == null) return TransactionResult.failResponse("Отсутствует vote");
         try {
             TransactionResult<MetaPost> postTransactionResult = getPost(postId);
             if (!postTransactionResult.isSuccess()) {return postTransactionResult.transferFailure();}
@@ -146,15 +155,19 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<Vote> likePost(String authToken, int postId) {
+    public static TransactionResult<Vote> likePost(String authToken, Integer postId) {
+        if (postId == null) return TransactionResult.failResponse("Отсутствует postId");
         return votePost(authToken, postId, true);
     }
 
-    public static TransactionResult<Vote> dislikePost(String authToken, int postId) {
+    public static TransactionResult<Vote> dislikePost(String authToken, Integer postId) {
+        if (postId == null) return TransactionResult.failResponse("Отсутствует postId");
         return votePost(authToken, postId, false);
     }
 
-    public static TransactionResult<Vote> getVote(String authToken, int postId) {
+    public static TransactionResult<Vote> getVote(String authToken, Integer postId) {
+        if (authToken == null) return TransactionResult.failResponse("Отсутствует authToken");
+        if (postId == null) return TransactionResult.failResponse("Отсутствует postId");
         try {
             TransactionResult<User> userTransactionResult = AuthentificationService.authUser(authToken);
             if (userTransactionResult.isSuccess()) {
@@ -170,7 +183,8 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<ArrayList<MetaPost>> getLastPosts(int page) {
+    public static TransactionResult<ArrayList<MetaPost>> getLastPosts(Integer page) {
+        if (page == null) return TransactionResult.failResponse("Отсутствует page");
         if (page < 0) {
             return TransactionResult.failResponse("Недопустимый номер страницы");
         }
@@ -182,7 +196,8 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<ArrayList<MetaPost>> getTopPosts(int page) {
+    public static TransactionResult<ArrayList<MetaPost>> getTopPosts(Integer page) {
+        if (page == null) return TransactionResult.failResponse("Отсутствует page");
         if (page < 0) {
             return TransactionResult.failResponse("Недопустимый номер страницы");
         }
@@ -194,7 +209,9 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<ArrayList<MetaPost>> findPosts(String query, int page) {
+    public static TransactionResult<ArrayList<MetaPost>> findPosts(String query, Integer page) {
+        if (page == null) return TransactionResult.failResponse("Отсутствует page");
+        if (query == null) return TransactionResult.failResponse("Отсутствует query");
         if (page < 0) {
             return TransactionResult.failResponse("Недопустимый номер страницы");
         }
@@ -209,7 +226,9 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<ArrayList<MetaPost>> getHubPosts(int hubId, int page) {
+    public static TransactionResult<ArrayList<MetaPost>> getHubPosts(Integer hubId, Integer page) {
+        if (hubId == null) return TransactionResult.failResponse("Отсутствует hubId");
+        if (page == null) return TransactionResult.failResponse("Отсутствует page");
         if (page < 0) {
             return TransactionResult.failResponse("Недопустимый номер страницы");
         }
@@ -226,7 +245,9 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<ArrayList<MetaPost>> getUserPosts(int userId, int page) {
+    public static TransactionResult<ArrayList<MetaPost>> getUserPosts(Integer userId, Integer page) {
+        if (userId == null) return TransactionResult.failResponse("Отсутствует userId");
+        if (page == null) return TransactionResult.failResponse("Отсутствует page");
         if (page < 0) {
             return TransactionResult.failResponse("Недопустимый номер страницы");
         }
@@ -255,6 +276,7 @@ public class ContentService {
     }
 
     public static TransactionResult<Integer> findPostPages(String query){
+        if (query == null) return TransactionResult.failResponse("Отсутствует query");
         if (query.length() < 3) {
             return TransactionResult.failResponse("Поисковый запрос должен содержать хотя бы 3 символа");
         }
@@ -268,7 +290,8 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<Integer> hubPostPages(int hubId){
+    public static TransactionResult<Integer> hubPostPages(Integer hubId){
+        if (hubId == null) return TransactionResult.failResponse("Отсутствует hubId");
         try {
             TransactionResult<MetaHub> hubTransactionResult = getHub(hubId);
             if (hubTransactionResult.isSuccess()) {
@@ -284,7 +307,8 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<Integer> userPostPages(int userId){
+    public static TransactionResult<Integer> userPostPages(Integer userId){
+        if (userId == null) return TransactionResult.failResponse("Отсутствует userId");
         try {
             TransactionResult<User> userTransactionResult = getUser(userId);
             if (userTransactionResult.isSuccess()) {
@@ -300,7 +324,8 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<MetaPost> getPost(int postId){
+    public static TransactionResult<MetaPost> getPost(Integer postId){
+        if (postId == null) return TransactionResult.failResponse("Отсутствует postId");
         try {
             MetaPost metaPost = MetaPostRepository.readMetaPost(postId);
             if (metaPost != null) {
@@ -314,7 +339,8 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<ArrayList<MetaHub>> getHubs(int page) {
+    public static TransactionResult<ArrayList<MetaHub>> getHubs(Integer page) {
+        if (page == null) return TransactionResult.failResponse("Отсутствует page");
         if (page < 0) {
             return TransactionResult.failResponse("Недопустимый номер страницы");
         }
@@ -337,7 +363,9 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<ArrayList<MetaHub>> getUserHubs(int creatorId, int page) {
+    public static TransactionResult<ArrayList<MetaHub>> getUserHubs(Integer creatorId, Integer page) {
+        if (creatorId == null) return TransactionResult.failResponse("Отсутствует creatorId");
+        if (page == null) return TransactionResult.failResponse("Отсутствует page");
         if (page < 0) {
             return TransactionResult.failResponse("Недопустимый номер страницы");
         }
@@ -349,7 +377,8 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<Integer> userHubPages(int creatorId){
+    public static TransactionResult<Integer> userHubPages(Integer creatorId){
+        if (creatorId == null) return TransactionResult.failResponse("Отсутствует creatorId");
         try {
             return TransactionResult.successResponse(
                     (MetaHubRepository.userMetaHubCount(creatorId)-1)/MetaHubRepository.getPageSize()
@@ -360,7 +389,8 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<MetaHub> getHub(int hubId) {
+    public static TransactionResult<MetaHub> getHub(Integer hubId) {
+        if (hubId == null) return TransactionResult.failResponse("Отсутствует hubId");
         try {
             MetaHub hub = MetaHubRepository.readMetaHub(hubId);
             if (hub != null) {
@@ -374,7 +404,8 @@ public class ContentService {
         }
     }
 
-    public static TransactionResult<User> getUser(int userId) {
+    public static TransactionResult<User> getUser(Integer userId) {
+        if (userId == null) return TransactionResult.failResponse("Отсутствует userId");
         try {
             User user = UserRepository.readUser(userId);
             if (user != null) {

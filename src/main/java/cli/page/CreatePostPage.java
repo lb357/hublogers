@@ -5,7 +5,7 @@ import cli.ConsoleApp;
 import model.domain.Hub;
 import model.domain.Post;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 
 public class CreatePostPage extends Page {
     Hub hub;

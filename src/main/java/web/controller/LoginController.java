@@ -3,7 +3,7 @@ package web.controller;
 import com.sun.net.httpserver.HttpExchange;
 import model.domain.Session;
 import service.AuthentificationService;
-import service.TransactionResult;
+import model.TransactionResult;
 import web.ViewRenderer;
 
 import java.io.IOException;
@@ -25,18 +25,14 @@ public class LoginController extends Controller {
 
     @Override
     public void post(HttpExchange exchange, Map<String, String> bodyQuery) throws IOException {
-        if (bodyQuery!=null&&bodyQuery.containsKey("email")&&bodyQuery.containsKey("password")) {
-            String email = decodeString(bodyQuery.get("email"));
-            String password = decodeString(bodyQuery.get("password"));
+        String email = decodeString(bodyQuery.get("email"));
+        String password = decodeString(bodyQuery.get("password"));
 
-            TransactionResult<Session> sessionTransactionResult = AuthentificationService.loginUser(email, password);
-            if (assertAction(exchange, sessionTransactionResult)) return;
-            Session session = sessionTransactionResult.getData();
+        TransactionResult<Session> sessionTransactionResult = AuthentificationService.loginUser(email, password);
+        if (assertAction(exchange, sessionTransactionResult)) return;
+        Session session = sessionTransactionResult.getData();
 
-            setAuthToken(exchange, session.getAuthToken());
-            redirect(exchange, "/");
-        } else {
-            redirectToError(exchange, "Не были переданы email и password для авторизации");
-        }
+        setAuthToken(exchange, session.getAuthToken());
+        redirect(exchange, "/");
     }
 }

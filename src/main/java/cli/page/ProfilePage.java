@@ -5,7 +5,7 @@ import cli.ConsoleApp;
 import model.domain.User;
 import service.AuthentificationService;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 
 public class ProfilePage extends Page {
     @Override

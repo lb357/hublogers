@@ -9,7 +9,7 @@ import model.domain.User;
 import model.domain.Vote;
 import service.AuthentificationService;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 
 public class PostPage extends Page {
     private final MetaPost metaPost;

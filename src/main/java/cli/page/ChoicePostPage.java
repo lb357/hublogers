@@ -3,7 +3,7 @@ package cli.page;
 import cli.ConsoleApp;
 import model.composite.MetaPost;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 
 public class ChoicePostPage extends Page {
     @Override

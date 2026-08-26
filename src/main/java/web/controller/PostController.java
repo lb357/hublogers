@@ -2,10 +2,11 @@ package web.controller;
 
 import com.sun.net.httpserver.HttpExchange;
 import model.composite.MetaPost;
+import model.domain.User;
 import model.domain.Vote;
+import service.AuthentificationService;
 import service.ContentService;
-import service.TransactionResult;
-import web.StatusCode;
+import model.TransactionResult;
 import web.ViewRenderer;
 
 import java.io.IOException;
@@ -20,22 +21,28 @@ public class PostController extends Controller {
     public void get(HttpExchange exchange, Map<String, String> urlQuery) throws IOException {
         Integer id = parseIntegerQueryField(urlQuery, "id");
         if (id==null) {
-            redirectToError(exchange, "Некорректный id поста");
+            redirectToError(exchange, "Переданы некорректные параметры");
             return;
         }
 
+
+        TransactionResult<MetaPost> postTransactionResult = ContentService.getPost(id);
+        if (assertAction(exchange, postTransactionResult)) return;
+        MetaPost post = postTransactionResult.getData();
+
         int voteDelta = 0;
+        boolean isAuthor = false;
+
         if (isAuthenticated(exchange)) {
             TransactionResult<Vote> voteTransactionResult = ContentService.getVote(getAuthToken(exchange), id);
             if (voteTransactionResult.isSuccess()){
                 Vote vote = voteTransactionResult.getData();
                 voteDelta = vote.getVoteDelta();
             }
-        }
 
-        TransactionResult<MetaPost> postTransactionResult = ContentService.getPost(id);
-        if (assertAction(exchange, postTransactionResult)) return;
-        MetaPost post = postTransactionResult.getData();
+            TransactionResult<User> user = AuthentificationService.authUser(getAuthToken(exchange));
+            isAuthor = user.isSuccess() && user.getData().getId().equals(post.getAuthor().getId());
+        }
 
         sendHtml(exchange,
                 ViewRenderer.fromResource("base").renderNav(isAuthenticated(exchange)).renderBase(
@@ -47,18 +54,23 @@ public class PostController extends Controller {
                         "vote/votes-display"
                 ).renderIfString(
                         "like-attribute",
-                        isAuthenticated(exchange)&&voteDelta>=0,
+                        isAuthenticated(exchange)&&voteDelta>=0&&!isAuthor,
                         "",
                         "disabled"
                 ).renderIfString(
                         "dislike-attribute",
-                        isAuthenticated(exchange)&&voteDelta<=0,
+                        isAuthenticated(exchange)&&voteDelta<=0&&!isAuthor,
                         "",
                         "disabled"
                 ).renderIfString(
                         "hub-attribute",
                         post.getHub() == null,
                         "hidden", ""
+                ).renderIfString(
+                        "edit-attribute",
+                        isAuthor,
+                        "",
+                        "hidden"
                 ).renderModel(post).get()
         );
 
@@ -68,7 +80,7 @@ public class PostController extends Controller {
     public void post(HttpExchange exchange, Map<String, String> bodyQuery) throws IOException {
         Integer id = parseIntegerQueryField(bodyQuery, "id");
         if (id == null || !bodyQuery.containsKey("vote") || !isAuthenticated(exchange)) {
-            redirectToError(exchange, "Переданные параметры не позволяют оставить голос");
+            redirectToError(exchange, "Переданы некорректные параметры");
             return;
         }
         String vote = bodyQuery.get("vote");

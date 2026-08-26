@@ -4,7 +4,7 @@ import cli.AuthStorage;
 import cli.ConsoleApp;
 import model.domain.Session;
 import service.AuthentificationService;
-import service.TransactionResult;
+import model.TransactionResult;
 
 public class LoginPage extends Page {
     @Override

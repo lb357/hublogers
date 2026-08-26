@@ -4,7 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import model.composite.UserStatistic;
 import model.domain.*;
 import service.AdminService;
-import service.TransactionResult;
+import model.TransactionResult;
 import web.ViewRenderer;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ public class AdminController extends Controller {
 
     @Override
     public void post(HttpExchange exchange, Map<String, String> bodyQuery) throws IOException {
-        if (bodyQuery!=null&&bodyQuery.containsKey("admin-key")&& AdminService.checkAdminKey(decodeString(bodyQuery.get("admin-key")))) {
+        if (bodyQuery.containsKey("admin-key")&& AdminService.checkAdminKey(decodeString(bodyQuery.get("admin-key")))) {
             String adminKey = decodeString(bodyQuery.get("admin-key"));
             if (bodyQuery.containsKey("entity")&&bodyQuery.containsKey("id")&&parseIntegerQueryField(bodyQuery, "id")!=null) {
                 int id = parseIntegerQueryField(bodyQuery, "id");

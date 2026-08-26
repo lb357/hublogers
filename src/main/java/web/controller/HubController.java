@@ -5,7 +5,7 @@ import model.DataModel;
 import model.composite.MetaHub;
 import model.composite.MetaPost;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 import web.StatusCode;
 import web.ViewRenderer;
 

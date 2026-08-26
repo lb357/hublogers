@@ -3,7 +3,7 @@ package web.controller;
 import com.sun.net.httpserver.HttpExchange;
 import model.domain.Hub;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 import web.ViewRenderer;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ public class CreateHubController extends Controller {
 
     @Override
     public void post(HttpExchange exchange, Map<String, String> bodyQuery) throws IOException {
-        if (isAuthenticated(exchange)&&bodyQuery!=null&&bodyQuery.containsKey("hubname")&&bodyQuery.containsKey("description")) {
+        if (isAuthenticated(exchange)) {
             TransactionResult<Hub> hubTransactionResult = ContentService.createHub(getAuthToken(exchange), decodeString(bodyQuery.get("hubname")), decodeString(bodyQuery.get("description")));
             if (hubTransactionResult.isSuccess()) {
                 redirect(exchange, "/profile");
@@ -33,7 +33,7 @@ public class CreateHubController extends Controller {
                 redirectToError(exchange, hubTransactionResult.getMessage());
             }
         } else {
-            redirectToError(exchange, "Переданные параметры не позволяют создать хаб");
+            redirectToError(exchange, "Переданы некорректные параметры");
         }
     }
 }

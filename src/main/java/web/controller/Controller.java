@@ -4,7 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import model.domain.User;
 import service.AuthentificationService;
-import service.TransactionResult;
+import model.TransactionResult;
 import web.StatusCode;
 
 import java.io.IOException;

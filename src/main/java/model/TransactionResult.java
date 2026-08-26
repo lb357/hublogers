@@ -1,8 +1,5 @@
-package service;
+package model;
 
-import model.DataModel;
-
-import java.lang.constant.Constable;
 import java.sql.SQLException;
 
 public class TransactionResult<T> {

@@ -3,7 +3,7 @@ package web.controller;
 import com.sun.net.httpserver.HttpExchange;
 import model.domain.Post;
 import service.ContentService;
-import service.TransactionResult;
+import model.TransactionResult;
 import web.ViewRenderer;
 
 import java.io.IOException;
@@ -36,7 +36,7 @@ public class CreatePostController extends Controller {
 
     @Override
     public void post(HttpExchange exchange, Map<String, String> bodyQuery) throws IOException {
-        if (isAuthenticated(exchange) && bodyQuery.containsKey("label") && bodyQuery.containsKey("content")) {
+        if (isAuthenticated(exchange)) {
             Integer hubId = parseIntegerQueryField(bodyQuery, "hub-id");
             TransactionResult<Post> postTransactionResult = ContentService.createPost(getAuthToken(exchange), hubId, decodeString(bodyQuery.get("label")), decodeString(bodyQuery.get("content")));
             if (postTransactionResult.isSuccess()) {
@@ -45,7 +45,7 @@ public class CreatePostController extends Controller {
                 redirectToError(exchange, postTransactionResult.getMessage());
             }
         } else {
-            redirectToError(exchange, "Переданные параметры не позволяют создать пост");
+            redirectToError(exchange, "Переданы некорректные параметры");
         }
     }
 }
