@@ -11,6 +11,7 @@
 <h3>Посты:</h3>
 {{ post-result }}
 <form action="/profile" method="get">
+    <label for="post-page">Страница:</label>
     <input type="number" name="post-page" id="post-page" min="1" max="{{ max-post-page }}" value="{{ current-post-page }}">
     <button type="submit">Просмотреть</button>
 </form>
@@ -19,6 +20,7 @@
 <h3>Хабы:</h3>
 {{ hub-result }}
 <form action="/profile" method="get">
+    <label for="hub-page">Страница:</label>
     <input type="number" name="hub-page" id="hub-page" min="1" max="{{ max-hub-page }}" value="{{ current-hub-page }}">
     <button type="submit">Просмотреть</button>
 </form>

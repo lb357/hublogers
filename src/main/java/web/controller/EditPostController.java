@@ -37,7 +37,7 @@ public class EditPostController extends Controller {
         sendHtml(exchange,
                 ViewRenderer.fromResource("base").renderNav(isAuthenticated(exchange)).renderBase(
                         "post/edit-post"
-                ).renderModel(post).get()
+                ).renderModel(post).renderString("post-content", post.getPost().getContent(), false).get()
         );
 
     }

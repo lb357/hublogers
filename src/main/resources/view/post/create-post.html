@@ -2,8 +2,11 @@
 <form action="/create/post" method="post">
     <label for="label">Заголовок:</label>
     <input type="text" id="label" name="label" required>
+    <br>
     <label for="content">Текст:</label>
+    <br>
     <textarea name="content" id="content"></textarea>
     <input type="hidden" id="hub-id" name="hub-id" value="{{ hub-id-attribute }}" readonly>
+    <br>
     <button type="submit">Создать</button>
 </form>
