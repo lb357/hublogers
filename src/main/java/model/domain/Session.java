@@ -40,8 +40,7 @@ public class Session implements DataModel {
         return Map.of(
                 "authToken", authToken,
                 "userId", Integer.toString(userId),
-                "authTime.datetime", authTime.toString(),
-                "authTime", Long.toString(authTime.getTime())
+                "authTime", authTime.toString()
         );
     }
 }

@@ -65,8 +65,7 @@ public class Post implements DataModel {
                 "authorId", Integer.toString(authorId),
                 "label", label,
                 "content", content,
-                "creationTime.datetime", creationTime.toString(),
-                "creationTime", Long.toString(creationTime.getTime())
+                "creationTime", creationTime.toString()
         ));
         if (hubId!=null) map.put("hubId", Integer.toString(hubId));
         return map;
