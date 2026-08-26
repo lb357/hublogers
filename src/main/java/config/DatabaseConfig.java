@@ -10,12 +10,12 @@ public class DatabaseConfig extends Config {
     private static final String DATABASE_NAME = "hublogers";
 
     public void load() {
-        this.driver = get("DATABASE_DRIVER", "org.postgresql.Driver");
-        this.url = get("DATABASE_URL", "jdbc:postgresql://localhost/");
-        this.username = get("DATABASE_USERNAME", "postgres");
-        this.password = get("DATABASE_PASSWORD", "postgres");
-        this.insertExampleData = get("DATABASE_INSERT_EXAMPLE_DATA", "TRUE").toLowerCase().trim().equals("true");
-        this.initDataBase = get("DATABASE_INIT", "TRUE").toLowerCase().trim().equals("true");
+        this.driver = get("database-driver", "org.postgresql.Driver");
+        this.url = get("database-url", "jdbc:postgresql://localhost/");
+        this.username = get("database-username", "postgres");
+        this.password = get("database-password", "postgres");
+        this.insertExampleData = get("database-insert-example-data", "false").toLowerCase().trim().equals("true");
+        this.initDataBase = get("database-init", "false").toLowerCase().trim().equals("true");
     }
 
     public String getDriver() {

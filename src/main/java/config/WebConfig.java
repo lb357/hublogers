@@ -8,15 +8,15 @@ public class WebConfig extends Config {
     private String hostName;
 
     public void load() {
-        this.enabled = get("WEBSERVER_ENABLED", "TRUE").toLowerCase().trim().equals("true");
+        this.enabled = get("webserver-enabled", "TRUE").toLowerCase().trim().equals("true");
         try {
-            this.port = Integer.parseInt(get("WEBSERVER_PORT", "80"));
+            this.port = Integer.parseInt(get("webserver-port", "80"));
         } catch (NumberFormatException e) {
             AdminOutput.error(e);
             this.port = 80;
         }
 
-        this.hostName = get("WEBSERVER_HOSTNAME", "localhost");
+        this.hostName = get("webserver-hostname", "localhost");
     }
 
     public boolean isEnabled() {
