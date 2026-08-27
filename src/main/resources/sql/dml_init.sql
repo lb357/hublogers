@@ -34,8 +34,8 @@ INSERT INTO votes (post_id, voter_id, vote) VALUES
 
 
 INSERT INTO sessions (auth_token, user_id) VALUES
-('Jjt72JuMOsaKYjI8FZJCk1yZAzyL7Sraed1qAyfYChU', 1),
-('p3wFNrbnKVGot6YMSO0-370dRvPplSSavo52VPp9WFs', 2),
-('NknInxyXHLoq_QvnZ6GJu1WvIqXDaJLWr3ka5mws0Fo', 2),
-('GWtLGuE9Szs3wiWtz5GCr5CLy9rX1OtFxNpexiwhv3E', 3),
-('YojJ88i_9Sif6Yx0bETfEmQ2JZuVl3Crs_ZD6agVHxM', 4);
+('bmmgNwnb9W/yDf7TmhigM6ujwchXYU5trykyAfngDX4=', 1),
+('AbLPLVb/+ltmgc2kTsODyZlkqNYu6w51dpjtxQcByb8=', 2),
+('IS4ojkmdnT7pNhlIpl8xCREdTv5LmnLNJobAMRIUkkY=', 2),
+('jgHehPDqSstcvVuqXXc83ZAS69PDRcBKjc5ywcTDY1w=', 3),
+('nmFOZekYlbJINVEK+IUcoWuzuEjOhoRz9xr1CqTc0Qo=', 4);

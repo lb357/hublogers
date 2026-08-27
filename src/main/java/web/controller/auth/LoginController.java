@@ -17,6 +17,7 @@ public class LoginController extends Controller {
 
     @Override
     public void get(HttpExchange exchange, Map<String, String> urlQuery) throws IOException {
+        if (isAuthenticated(exchange)) redirect(exchange, "/profile");
         sendHtml(exchange,
                 ViewRenderer.fromResource("base").renderNav(isAuthenticated(exchange)).renderBase(
                         "auth/login"
@@ -26,6 +27,7 @@ public class LoginController extends Controller {
 
     @Override
     public void post(HttpExchange exchange, Map<String, String> bodyQuery) throws IOException {
+        if (isAuthenticated(exchange)) redirect(exchange, "/profile");
         String email = decodeString(bodyQuery.get("email"));
         String password = decodeString(bodyQuery.get("password"));
 
