@@ -1,6 +1,7 @@
 package web.controller.auth;
 
 import com.sun.net.httpserver.HttpExchange;
+import service.AuthentificationService;
 import web.StatusCode;
 import web.controller.Controller;
 
@@ -14,6 +15,7 @@ public class LogoutController extends Controller {
 
     @Override
     public void get(HttpExchange exchange, Map<String, String> urlQuery) throws IOException {
+        AuthentificationService.logoutUser(getAuthToken(exchange));
         deleteAuthToken(exchange);
         redirect(exchange, "/");
     }

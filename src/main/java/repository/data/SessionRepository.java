@@ -3,6 +3,7 @@ package repository.data;
 import model.value.DateTime;
 import model.domain.Session;
 import repository.Database;
+import util.SecureStringGenerator;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class SessionRepository {
                     "INSERT INTO sessions (auth_token, user_id) VALUES (?, ?) returning auth_time;",
                     Statement.RETURN_GENERATED_KEYS
             );
-            statement.setString(1, authToken);
+            statement.setString(1, SecureStringGenerator.getSHA256String(authToken));
             statement.setInt(2, user_id);
             statement.executeUpdate();
             ResultSet resultSet = statement.getGeneratedKeys();
@@ -40,7 +41,7 @@ public class SessionRepository {
             PreparedStatement statement = connection.prepareStatement(
                     "SELECT * FROM sessions WHERE auth_token=?;"
             );
-            statement.setString(1, authToken);
+            statement.setString(1, SecureStringGenerator.getSHA256String(authToken));
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return resultSet.getInt(2);
@@ -53,7 +54,7 @@ public class SessionRepository {
     public static int deleteSession(String authToken) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement("DELETE from sessions WHERE auth_token=?;");
-            statement.setString(1, authToken);
+            statement.setString(1, SecureStringGenerator.getSHA256String(authToken));
             return statement.executeUpdate();
         }
     }
