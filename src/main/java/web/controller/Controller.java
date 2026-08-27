@@ -110,7 +110,7 @@ public abstract class Controller implements HttpHandler {
     }
 
     public String getAuthToken(HttpExchange exchange) throws IOException {
-        String header = exchange.getRequestHeaders().getFirst("Cookie");
+        String header = exchange.getRequestHeaders().getFirst("Cookie").replace(" ", "");
         String cookieField = "authToken=";
         if (header == null) return "";
         for (String cookie: header.split(";")) {
