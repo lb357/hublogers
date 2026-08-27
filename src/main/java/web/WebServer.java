@@ -22,7 +22,7 @@ public class WebServer {
     private static HttpServer server;
     private static final WebConfig config = new WebConfig();
 
-    public static void registerControllers(){
+    private static void registerControllers(){
         registerController(new HomeController("/"));
         registerController(new StylesController("/styles.css"));
         registerController(new AdminController("/admin"));
