@@ -24,6 +24,6 @@ public class ChoiceHubPage extends Page {
 
     @Override
     public String getPageName() {
-        return "ВЫБОР ПОСТА";
+        return "ВЫБОР ХАБА";
     }
 }
