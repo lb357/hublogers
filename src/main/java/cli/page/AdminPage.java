@@ -66,7 +66,7 @@ public class AdminPage extends Page {
                     }
                     case 4 -> {
                         System.out.println("Данные из таблицы posts\nФормат:");
-                        System.out.println("(id Хаба <- id Пользователя) Название - Описание");
+                        System.out.println("(id Поста / Имя Пользователя / id Хаба / Название Хаба) Время создания\nЗаголовок [Рейтинг]");
                         System.out.println();
                         TransactionResult<ArrayList<Post>> transactionResult = AdminService.getAllPosts(adminKey);
                         if (transactionResult.isSuccess()){

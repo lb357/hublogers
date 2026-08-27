@@ -2,6 +2,8 @@ package cli.page;
 
 import cli.ConsoleApp;
 import model.TransactionResult;
+import model.composite.MetaHub;
+import model.composite.MetaPost;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -32,9 +34,11 @@ public class ListPage<T> extends Page {
             if (dataTransactionResult.isSuccess()) {
                 ArrayList<T> data = dataTransactionResult.getData();
                 if (data == null || data.isEmpty()) {
-                    renderFailMessage("Посты не найдены...");
+                    renderFailMessage("Элементы не найдены...");
                 } else {
-                    String description = "(id Поста / Имя Пользователя / id Хаба / Название Хаба) Время создания\nЗаголовок [Рейтинг]\n";
+                    String description = "";
+                    if (data.getFirst() instanceof MetaPost) description= "(id Поста / Имя Пользователя / id Хаба / Название Хаба) Время создания\nЗаголовок [Рейтинг]";
+                    if (data.getFirst() instanceof MetaHub) description= "(id Хаба <- id Пользователя) Название - Описание";
                     System.out.printf("Формат:\n%s\nСтраница: %d/%d\n\n", description, currentPage + 1, maxPage + 1);
                     data.forEach(System.out::println);
                     System.out.println("1) Просмотреть");
@@ -66,6 +70,6 @@ public class ListPage<T> extends Page {
 
     @Override
     public String getPageName() {
-        return "ПОСТЫ";
+        return "СПИСОК";
     }
 }
