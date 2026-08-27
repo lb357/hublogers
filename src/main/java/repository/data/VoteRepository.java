@@ -58,15 +58,15 @@ public class VoteRepository {
 
     public static Vote getVote(int postId, int voterId) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM votes WHERE post_id=? AND voter_id=?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT vote FROM votes WHERE post_id=? AND voter_id=?;");
             statement.setInt(1, postId);
             statement.setInt(2, voterId);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Vote(
-                    resultSet.getInt(1),
-                    resultSet.getInt(2),
-                    resultSet.getBoolean(3)
+                    postId,
+                    voterId,
+                    resultSet.getBoolean(1)
                 );
             } else {
                 return new Vote(

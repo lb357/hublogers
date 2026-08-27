@@ -40,16 +40,16 @@ public class UserRepository {
 
     public static User readUser(String email, String password) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE email=?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT id, username, password_hash, status FROM users WHERE email=?;");
             statement.setString(1, email);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 User user = new User(
                         resultSet.getInt(1),
                         resultSet.getString(2),
+                        email,
                         resultSet.getString(3),
-                        resultSet.getString(4),
-                        resultSet.getString(5)
+                        resultSet.getString(4)
                 );
                 if (user.checkPassword(password)) {
                     return user;
@@ -83,16 +83,16 @@ public class UserRepository {
     public static User updateUser(int id, String status) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE users SET status=? WHERE id=? RETURNING *;"
+                    "UPDATE users SET status=? WHERE id=? RETURNING username;"
             );
             statement.setString(1, status);
             statement.setInt(2, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new User(
-                        resultSet.getInt(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3)
+                        id,
+                        resultSet.getString(1),
+                        status
                 );
             } else {
                 return null;

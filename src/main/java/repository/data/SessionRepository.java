@@ -39,12 +39,12 @@ public class SessionRepository {
             );
 
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT * FROM sessions WHERE auth_token=?;"
+                    "SELECT user_id FROM sessions WHERE auth_token=?;"
             );
             statement.setString(1, SecureStringGenerator.getSHA256String(authToken));
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return resultSet.getInt(2);
+                return resultSet.getInt(1);
             } else {
                 return null;
             }

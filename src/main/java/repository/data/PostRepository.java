@@ -48,16 +48,16 @@ public class PostRepository {
 
     public static Post readPost(int id)  throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM posts WHERE id=?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT author_id, hub_id, label, content, creation_time FROM posts WHERE id=?;");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Post(
+                        resultSet.getInt(id),
                         resultSet.getInt(1),
                         resultSet.getInt(2),
-                        resultSet.getInt(3),
+                        resultSet.getString(3),
                         resultSet.getString(4),
-                        resultSet.getString(5),
                         new DateTime(resultSet.getTimestamp(6))
                 );
             } else {
@@ -70,19 +70,19 @@ public class PostRepository {
     public static Post updatePost(int id, String content) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "UPDATE posts SET content=?, creation_time=NOW() WHERE id=? RETURNING *;"
+                    "UPDATE posts SET content=?, creation_time=NOW() WHERE id=? RETURNING author_id, hub_id, label, creation_time;"
             );
             statement.setString(1, content);
             statement.setInt(2, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Post(
+                        id,
                         resultSet.getInt(1),
                         resultSet.getInt(2),
-                        resultSet.getInt(3),
-                        resultSet.getString(4),
-                        resultSet.getString(5),
-                        new DateTime(resultSet.getTimestamp(6))
+                        resultSet.getString(3),
+                        content,
+                        new DateTime(resultSet.getTimestamp(4))
                 );
             } else {
                 return null;

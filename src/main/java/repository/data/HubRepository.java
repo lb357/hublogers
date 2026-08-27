@@ -39,15 +39,15 @@ public class HubRepository {
 
     public static Hub readHub(int id) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM hubs WHERE id=?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT creator_id, hubname, description FROM hubs WHERE id=?;");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Hub(
+                        id,
                         resultSet.getInt(1),
-                        resultSet.getInt(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4)
+                        resultSet.getString(2),
+                        resultSet.getString(3)
                 );
             } else {
                 return null;
@@ -58,16 +58,16 @@ public class HubRepository {
 
     public static Hub updateHub(int id, String description) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("UPDATE hubs SET description=? WHERE id=? RETURNING *;");
+            PreparedStatement statement = connection.prepareStatement("UPDATE hubs SET description=? WHERE id=? RETURNING creator_id, hubname;");
             statement.setString(1, description);
             statement.setInt(2, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Hub(
+                        id,
                         resultSet.getInt(1),
-                        resultSet.getInt(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4)
+                        resultSet.getString(2),
+                        description
                 );
             } else {
                 return null;

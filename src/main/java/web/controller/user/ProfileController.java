@@ -85,7 +85,7 @@ public class ProfileController extends Controller {
     @Override
     public void post(HttpExchange exchange, Map<String, String> bodyQuery) throws IOException {
         if (isAuthenticated(exchange) && !bodyQuery.get("status").isEmpty()) {
-            TransactionResult<User> userTransactionResult = ContentService.updateUser(getAuthToken(exchange), bodyQuery.get("status"));
+            TransactionResult<User> userTransactionResult = ContentService.updateUser(getAuthToken(exchange), decodeString(bodyQuery.get("status")));
             if (assertAction(exchange, userTransactionResult)) return;
             redirect(exchange, "/profile");
         } else {
