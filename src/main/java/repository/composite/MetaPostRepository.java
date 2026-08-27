@@ -53,7 +53,7 @@ public class MetaPostRepository {
     public static ArrayList<MetaPost> getLastMetaPosts(int offset, int limit) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id ORDER BY creation_time OFFSET ? LIMIT ?;"
+                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id ORDER BY creation_time DESC OFFSET ? LIMIT ?;"
             );
             statement.setInt(1, offset);
             statement.setInt(2, limit);
