@@ -53,12 +53,12 @@ public class PostRepository {
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new Post(
-                        resultSet.getInt(id),
+                        id,
                         resultSet.getInt(1),
                         resultSet.getInt(2),
                         resultSet.getString(3),
                         resultSet.getString(4),
-                        new DateTime(resultSet.getTimestamp(6))
+                        new DateTime(resultSet.getTimestamp(5))
                 );
             } else {
                 return null;
