@@ -64,14 +64,14 @@ public class UserRepository {
 
     public static User readUser(int id) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT id, username, status FROM users WHERE id=?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT username, status FROM users WHERE id=?;");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 return new User(
-                        resultSet.getInt(1),
-                        resultSet.getString(2),
-                        resultSet.getString(3)
+                        id,
+                        resultSet.getString(1),
+                        resultSet.getString(2)
                 );
             } else {
                 return null;

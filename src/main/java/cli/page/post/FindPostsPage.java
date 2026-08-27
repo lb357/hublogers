@@ -19,6 +19,6 @@ public class FindPostsPage extends Page {
 
     @Override
     public String getPageName() {
-        return "СВЕЖЕЕ";
+        return "ПОИСК ПОСТОВ";
     }
 }
