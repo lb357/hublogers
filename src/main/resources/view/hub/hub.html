@@ -7,6 +7,7 @@
 {{ result }}
 <form action="/hub" method="get">
     <input type="hidden" name="id" id="id" value="{{ hub.id }}">
+    <label for="page">Страница:</label>
     <input type="number" name="page" id="page" min="1" max="{{ max-page }}" value="{{ current-page }}">
     <button type="submit">Просмотреть</button>
 </form>
