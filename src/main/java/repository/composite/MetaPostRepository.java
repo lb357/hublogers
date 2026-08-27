@@ -16,7 +16,11 @@ public class MetaPostRepository {
     public static MetaPost readMetaPost(int id)  throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id WHERE p.id=?;"
+                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time," +
+                        " (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*)" +
+                        " FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status," +
+                        " h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id " +
+                        "LEFT JOIN hubs h ON h.id=p.hub_id WHERE p.id=?;"
             );
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -53,7 +57,11 @@ public class MetaPostRepository {
     public static ArrayList<MetaPost> getLastMetaPosts(int offset, int limit) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id ORDER BY creation_time DESC OFFSET ? LIMIT ?;"
+                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time, (SELECT " +
+                        "COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) FROM " +
+                        "votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status," +
+                        " h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id" +
+                        " LEFT JOIN hubs h ON h.id=p.hub_id ORDER BY creation_time DESC OFFSET ? LIMIT ?;"
             );
             statement.setInt(1, offset);
             statement.setInt(2, limit);
@@ -94,7 +102,12 @@ public class MetaPostRepository {
     public static ArrayList<MetaPost> getTopMetaPosts(int offset, int limit) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                "SELECT * FROM (SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id) ORDER BY (likes-dislikes) DESC OFFSET ? LIMIT ?;"
+                "SELECT * FROM (SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content," +
+                        " p.creation_time, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) " +
+                        "as likes, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes," +
+                        " u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON" +
+                        " u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id) ORDER BY (likes-dislikes) DESC OFFSET " +
+                        "? LIMIT ?;"
             );
             statement.setInt(1, offset);
             statement.setInt(2, limit);
@@ -147,7 +160,12 @@ public class MetaPostRepository {
     public static ArrayList<MetaPost> findMetaPosts(String query, int offset, int limit) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id WHERE p.label LIKE ? ORDER BY creation_time DESC OFFSET ? LIMIT ?;"
+                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time," +
+                        " (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) " +
+                        "FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status, " +
+                        "h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id" +
+                        " LEFT JOIN hubs h ON h.id=p.hub_id WHERE p.label LIKE ? ORDER BY creation_time DESC" +
+                        " OFFSET ? LIMIT ?;"
             );
             statement.setString(1, "%" + query + "%");
             statement.setInt(2, offset);
@@ -204,7 +222,12 @@ public class MetaPostRepository {
     public static ArrayList<MetaPost> getHubMetaPosts(int hubId, int offset, int limit) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id WHERE p.hub_id = ? ORDER BY creation_time DESC OFFSET ? LIMIT ?;"
+                "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time," +
+                        " (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes," +
+                        " (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, " +
+                        "u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users " +
+                        "u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id WHERE p.hub_id = ? ORDER BY " +
+                        "creation_time DESC OFFSET ? LIMIT ?;"
             );
             statement.setInt(1, hubId);
             statement.setInt(2, offset);
@@ -261,7 +284,12 @@ public class MetaPostRepository {
     public static ArrayList<MetaPost> getUserMetaPosts(int userId, int offset, int limit) throws SQLException {
         try (Connection connection = Database.getConnection()) {
             PreparedStatement statement = connection.prepareStatement(
-                    "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes, (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p JOIN users u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id WHERE p.author_id = ? ORDER BY creation_time DESC OFFSET ? LIMIT ?;"
+                    "SELECT p.id as post_id, p.author_id, p.hub_id, p.label, p.content, p.creation_time," +
+                            " (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND v.vote) as likes," +
+                            " (SELECT COUNT(*) FROM votes v WHERE v.post_id=p.id AND NOT v.vote) as dislikes, " +
+                            "u.username, u.status, h.creator_id, h.hubname, h.description FROM posts p" +
+                            " JOIN users u ON u.id=p.author_id LEFT JOIN hubs h ON h.id=p.hub_id " +
+                            "WHERE p.author_id = ? ORDER BY creation_time DESC OFFSET ? LIMIT ?;"
             );
             statement.setInt(1, userId);
             statement.setInt(2, offset);

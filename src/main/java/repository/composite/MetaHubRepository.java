@@ -13,7 +13,9 @@ public class MetaHubRepository {
 
     public static MetaHub readMetaHub(int id) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT h.id as hub_id, h.creator_id, h.hubname, h.description, u.username, u.status FROM hubs h JOIN users u ON u.id=h.creator_id WHERE h.id=?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT h.id as hub_id, h.creator_id, " +
+                    "h.hubname, h.description, u.username, u.status FROM hubs h JOIN users u ON u.id=h.creator_id " +
+                    "WHERE h.id=?;");
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
@@ -39,7 +41,9 @@ public class MetaHubRepository {
 
     public static ArrayList<MetaHub> getMetaHubs(int offset, int limit) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT h.id as hub_id, h.creator_id, h.hubname, h.description, u.username, u.status FROM hubs h JOIN users u ON u.id=h.creator_id OFFSET ? LIMIT ?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT h.id as hub_id, h.creator_id, " +
+                    "h.hubname, h.description, u.username, u.status FROM hubs h JOIN users u ON u.id=h.creator_id " +
+                    "OFFSET ? LIMIT ?;");
             statement.setInt(1, offset);
             statement.setInt(2, limit);
             ResultSet resultSet = statement.executeQuery();
@@ -66,7 +70,9 @@ public class MetaHubRepository {
 
     public static ArrayList<MetaHub> getUserMetaHubs(int creatorId, int offset, int limit) throws SQLException {
         try (Connection connection = Database.getConnection()) {
-            PreparedStatement statement = connection.prepareStatement("SELECT h.id as hub_id, h.creator_id, h.hubname, h.description, u.username, u.status FROM hubs h JOIN users u ON u.id=h.creator_id WHERE h.creator_id=? OFFSET ? LIMIT ?;");
+            PreparedStatement statement = connection.prepareStatement("SELECT h.id as hub_id, h.creator_id, " +
+                    "h.hubname, h.description, u.username, u.status FROM hubs h JOIN users u ON u.id=h.creator_id " +
+                    "WHERE h.creator_id=? OFFSET ? LIMIT ?;");
             statement.setInt(1, creatorId);
             statement.setInt(2, offset);
             statement.setInt(3, limit);
